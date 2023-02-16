@@ -1,0 +1,16 @@
+﻿namespace SteamAchievementsRetrieving
+{
+    public static class Constants
+    {
+        public const string HeaderJsonType = "application/json",
+            ApplicationIdWithQuestionMarkParam = "?appid",
+            AuthentificationKeyParam = "key",
+            SteamIdParam = "steamid",
+            LanguageParam = "l",
+            HeaderOfCsvFile = "Achivement;Description",
+            CsvExtension = ".csv",
+            Achievements = "Achievements ",
+            UnlockedAchievements = "UnlockedAchievements ",
+            LockedAchievements = "LockedAchievements ";
+    }
+}

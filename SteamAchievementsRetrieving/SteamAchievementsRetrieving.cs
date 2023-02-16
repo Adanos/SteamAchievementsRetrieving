@@ -14,25 +14,24 @@ namespace SteamAchievementsRetrieving
         public SteamAchievementsRetrieving(SteamAchievementConfiguration steamAchievementConfiguration)
         {
             _steamAchievementConfiguration = steamAchievementConfiguration;
-            string addressApi = _steamAchievementConfiguration.AddressApi;
             _client = new HttpClient
             {
-                BaseAddress = new Uri(addressApi)
+                BaseAddress = new Uri(_steamAchievementConfiguration.AddressApi)
             };
         }
 
-        public SteamAchievementResponse GetAchievements()
+        public SteamAchievementResponse GetAllAchievements()
         {
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/json"));
-            var httpValueCollection = HttpUtility.ParseQueryString(string.Empty);
-            httpValueCollection.Add("?appid", _steamAchievementConfiguration.ApplicationId);
-            httpValueCollection.Add("key", _steamAchievementConfiguration.AuthentificationKey);
-            httpValueCollection.Add("steamid", _steamAchievementConfiguration.Steamid);
-            httpValueCollection.Add("l", _steamAchievementConfiguration.Language);
+                new MediaTypeWithQualityHeaderValue(Constants.HeaderJsonType));
+            var httpValues = HttpUtility.ParseQueryString(string.Empty);
+            httpValues.Add(Constants.ApplicationIdWithQuestionMarkParam, _steamAchievementConfiguration.ApplicationId);
+            httpValues.Add(Constants.AuthentificationKeyParam, _steamAchievementConfiguration.AuthentificationKey);
+            httpValues.Add(Constants.SteamIdParam, _steamAchievementConfiguration.SteamId);
+            httpValues.Add(Constants.LanguageParam, _steamAchievementConfiguration.Language);
 
-            var achievements = _client.GetAsync(httpValueCollection.ToString());
+            var achievements = _client.GetAsync(httpValues.ToString());
 
             if (achievements.Result.IsSuccessStatusCode)
             {
