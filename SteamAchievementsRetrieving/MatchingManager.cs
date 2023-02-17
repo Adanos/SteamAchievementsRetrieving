@@ -4,12 +4,12 @@ namespace SteamAchievementsRetrieving
 {
     public class MatchingManager
     {
-        public string FindMatching(string text)
+        public string FindCountryMatching(string text)
         {
-            string pattern = @"\bas\b\s[a-zA-Z]*(\s\bor\b[a-zA-Z\s]*)?";
+            string countryPattern = @"\bas\b\s[a-z]*(((,\s[a-z]*)*\s\bor\b)?\s[a-z\s]*)?";
             string result = null;
+            Match match = Regex.Match(text, countryPattern, RegexOptions.IgnoreCase);
 
-            Match match = Regex.Match(text, pattern, RegexOptions.IgnoreCase);
             if (match.Success)
             {
                 result = match.Captures[0].Value;
