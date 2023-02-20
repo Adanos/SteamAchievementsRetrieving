@@ -7,7 +7,7 @@ namespace SteamAchievementsRetrieving
     public class AchievementMatrixCreator
     {
         private IList<Achievement> Achievements { get; }
-        private IDictionary<string, List<string>> matrix = new Dictionary<string, List<string>>();
+        private IDictionary<string, List<string>> Matrix = new Dictionary<string, List<string>>();
         public AchievementMatrixCreator(IList<Achievement> achievements)
         {
             Achievements = achievements;
@@ -19,14 +19,14 @@ namespace SteamAchievementsRetrieving
 
             foreach (var achievement in Achievements)
             {
-                var countries = matchingManager.FindCountryMatching(achievement.Description)?.Split(",").Where(x => !string.IsNullOrEmpty(x));
+                var countries = matchingManager.FindCountryMatching(achievement.Description)?.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim());
 
                 foreach (var country in countries ?? Enumerable.Empty<string>())
                 {
-                    bool exists = matrix.TryGetValue(country, out List<string> value);
+                    bool exists = Matrix.TryGetValue(country, out List<string> value);
                     if (exists)
                         value.Add(achievement.Name);
-                    else matrix.Add(country, new List<string>() { achievement.Name });
+                    else Matrix.Add(country, new List<string>() { achievement.Name });
                 }
             }
         }
