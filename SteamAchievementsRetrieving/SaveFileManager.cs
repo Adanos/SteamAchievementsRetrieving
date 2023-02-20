@@ -20,10 +20,9 @@ namespace SteamAchievementsRetrieving
 
         private string CreateCsvFile()
         {
-            string separator = ";";
             StringBuilder stringBuilder = new StringBuilder(Constants.HeaderOfCsvFile + Environment.NewLine);
             foreach (var achievement in Achievements ?? Enumerable.Empty<Achievement>())
-                stringBuilder.Append(string.Format("{0}{1}{2}{3}", achievement.Name, separator, achievement.Description, Environment.NewLine));
+                stringBuilder.Append(string.Format("{0}{1}{2}{3}", achievement.Name, Constants.Separator, achievement.Description, Environment.NewLine));
 
             return stringBuilder.ToString();
         }
