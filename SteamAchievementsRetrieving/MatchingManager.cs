@@ -6,9 +6,9 @@ namespace SteamAchievementsRetrieving
     {
         public string FindCountryMatching(string text)
         {
-            string countryPattern = @"\bas\b\s[a-z]*(((,\s[a-z]*)*\s\bor\b)?\s[a-z\s]*)?";
+            string countryPattern = @"((\bas\b)|(\bAs\b))\s(\bthe\b\s)?([A-Z][a-z]*\s?)*((,\s[a-zA-Z]*)*\s?\bor\b\s[a-zA-Z\s]*)*";
             string result = null;
-            Match match = Regex.Match(text, countryPattern, RegexOptions.IgnoreCase);
+            Match match = Regex.Match(text, countryPattern);
 
             if (match.Success)
             {
