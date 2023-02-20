@@ -20,6 +20,8 @@ namespace SteamAchievementsRetrievingTests
         [TestCase("As Tver, Rostov, Kazan or Odoyev, conquer all Russia.", "Tver, Rostov, Kazan, Odoyev")]
         [TestCase("As Tver, Rostov, Kazan, Crimea or Odoyev, conquer all Russia.", "Tver, Rostov, Kazan, Crimea, Odoyev")]
         [TestCase("Conquer all Russia as Tver, Rostov, Kazan, Crimea or Odoyev.", "Tver, Rostov, Kazan, Crimea, Odoyev")]
+        [TestCase("As Spain have Paris, Roma, Berlin under you.", "Spain")]
+        [TestCase("As the Papacy own Jerusalem.", "the Papacy")]
         public void FindMatching_ExistSubstring_ReturnState(string text, string expectedResult)
         {
             MatchingManager matchingManager = new MatchingManager();
