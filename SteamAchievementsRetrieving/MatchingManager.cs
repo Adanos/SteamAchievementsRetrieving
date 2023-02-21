@@ -13,7 +13,7 @@ namespace SteamAchievementsRetrieving
             if (match.Success)
             {
                 result = match.Captures[0].Value;
-                result = result?.Replace("as", "")?.Replace("As", "")?.Replace(" or", ",").Trim();
+                result = result?.Replace("as ", "")?.Replace("As ", "")?.Replace(" or", ",").Trim();
             }
 
             return result;

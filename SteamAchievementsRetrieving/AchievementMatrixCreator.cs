@@ -35,6 +35,7 @@ namespace SteamAchievementsRetrieving
             Matrix = Matrix.OrderByDescending(x => x.Value.Count).ToDictionary(x => x.Key, x => x.Value);
 
             MergeTheSameKeys();
+            Matrix = Matrix.OrderBy(x => x.Key).OrderByDescending(x => x.Value.Count).ToDictionary(x => x.Key, x => x.Value);
         }
 
         private void MergeTheSameKeys()
