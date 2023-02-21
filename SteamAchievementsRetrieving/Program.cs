@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using SteamAchievementsRetrieving.IO;
 using SteamAchievementsRetrieving.Models;
 using SteamAchievementsRetrieving.Services;
 using System.Collections.Generic;
@@ -20,18 +21,11 @@ namespace SteamAchievementsRetrieving
             FilenameCreator filenameCreator = new FilenameCreator(steamAchievementConfiguration);
             string pattern = filenameCreator.CreateFilename(@"*");
             string[] files = Directory.GetFiles(steamAchievementConfiguration.FilePathToSaveResult, pattern, SearchOption.TopDirectoryOnly);
-            IList<Achievement> achievements = new List<Achievement>();
+            IList<Achievement> achievements;
             if (files.Length > 0)
             {
-                string line;
-                var fileStream = new FileStream(files[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-                using var reader = new StreamReader(fileStream);
-                line = reader.ReadLine();
-                while ((line = reader.ReadLine()) != null)
-                {
-                    string[] words = line.Split(Constants.Separator);
-                    achievements.Add(new Achievement() { Name = words[0], Description = words[1] });
-                }
+                ReadFileManager readFileManager = new ReadFileManager();
+                achievements = readFileManager.ReadAchievementsFromFile(files[0]);
             }
             else
             {
