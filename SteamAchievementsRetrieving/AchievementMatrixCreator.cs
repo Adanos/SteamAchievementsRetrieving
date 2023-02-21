@@ -7,6 +7,10 @@ namespace SteamAchievementsRetrieving
 {
     public class AchievementMatrixCreator
     {
+        private readonly IDictionary<string, string> CountryNamesReplacement = new Dictionary<string, string>
+        {
+            { "Papacy", "Papal State" }
+        };
         private IList<Achievement> Achievements { get; }
         public IDictionary<string, List<string>> Matrix { get; private set; }
         public AchievementMatrixCreator(IList<Achievement> achievements)
@@ -40,14 +44,14 @@ namespace SteamAchievementsRetrieving
 
         private void MergeTheSameKeys()
         {
-            IDictionary<string, List<string>> newMatrix = new Dictionary<string, List<string>>();
-
             var duplicateKeys = Matrix.Keys.Where(x => Regex.Match(x, @"(\bthe\b)|(\bThe\b).*").Success).ToList();
 
             foreach (var item in duplicateKeys)
             {
                 string keyToChange = item.Replace("The ", "").Replace("the ", "");
+                keyToChange = CountryNamesReplacement.ContainsKey(keyToChange) ? CountryNamesReplacement[keyToChange] : keyToChange;
                 Matrix.TryGetValue(item, out List<string> values);
+
                 if (Matrix.ContainsKey(keyToChange))
                 {
                     Matrix[keyToChange].AddRange(values);               
