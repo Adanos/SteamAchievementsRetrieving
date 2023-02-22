@@ -25,11 +25,22 @@ namespace SteamAchievementsRetrievingTests
         [TestCase("As Perm, own or have a subject own the Russian, Siberian and Cascadian Regions.", "Perm")]
         [TestCase("Form Bavaria starting as München and win with Dortmund and Berlin.", "München")]
         [TestCase("As Asturias, drink a rum.", "Asturias")]
-        public void FindMatching_ExistSubstring_ReturnState(string text, string expectedResult)
+        public void FindMatching_ExistSubstring_ReturnState(string text, string expectedValue)
         {
             MatchingManager matchingManager = new MatchingManager();
             string result = matchingManager.FindCountryMatching(text);
-            Assert.AreEqual(expectedResult, result);
+            Assert.AreEqual(expectedValue, result);
+        }
+
+        [TestCase("Example text.", null)]
+        [TestCase("Complete the Spanish Mission Tree.", "Spain")]
+        [TestCase("Complete the Mewar Mission Tree.", "Mewar")]
+        public void PhrasesReferringToCountry_DifferentNamesForTheSameCountry_ReturnState(string description, string expectedValue)
+        {
+            MatchingManager matchingManager = new MatchingManager();
+
+            string result = matchingManager.FindPhrasesReferringToCountry(description);
+            Assert.AreEqual(expectedValue, result);
         }
     }
 }
