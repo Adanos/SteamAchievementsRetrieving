@@ -11,6 +11,7 @@ namespace SteamAchievementsRetrieving
         {
             { "Papacy", "Papal State" }
         };
+
         private IList<Achievement> Achievements { get; }
         public IDictionary<string, List<string>> Matrix { get; private set; }
         public AchievementMatrixCreator(IList<Achievement> achievements)
@@ -26,20 +27,29 @@ namespace SteamAchievementsRetrieving
             foreach (var achievement in Achievements)
             {
                 var countries = matchingManager.FindCountryMatching(achievement.Description)?.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim());
-
+                var additionalCountry = matchingManager.FindPhrasesReferringToCountry(achievement.Description);
+                
                 foreach (var country in countries ?? Enumerable.Empty<string>())
                 {
-                    bool exists = Matrix.TryGetValue(country, out List<string> value);
-                    if (exists)
-                        value.Add(achievement.Name);
-                    else Matrix.Add(country, new List<string>() { achievement.Name });
+                    UpdateMatrixByCountry(achievement, country);
                 }
+
+                if (!string.IsNullOrEmpty(additionalCountry))
+                    UpdateMatrixByCountry(achievement, additionalCountry);
             }
 
             Matrix = Matrix.OrderByDescending(x => x.Value.Count).ToDictionary(x => x.Key, x => x.Value);
 
             MergeTheSameKeys();
             Matrix = Matrix.OrderBy(x => x.Key).OrderByDescending(x => x.Value.Count).ToDictionary(x => x.Key, x => x.Value);
+        }
+
+        private void UpdateMatrixByCountry(Achievement achievement, string country)
+        {
+            bool exists = Matrix.TryGetValue(country, out List<string> value);
+            if (exists)
+                value.Add(achievement.Name);
+            else Matrix.Add(country, new List<string>() { achievement.Name });
         }
 
         private void MergeTheSameKeys()
