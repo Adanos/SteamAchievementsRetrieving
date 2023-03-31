@@ -1,0 +1,1 @@
+SteamAchievementsRetrieving allows a retrieving achievements for game Europa Universalis IV. A purpose is grouping achievements by country. E.g. I want play as Spain and unlock all achievements for Spain in one game. In the configuration you can set whether to retrieve locked, unlocked or all achievements.
