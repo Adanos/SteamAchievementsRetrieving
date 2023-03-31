@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace SteamAchievementsRetrieving.Services
 {
-    public class AchievementManager
+    public class AchievementGrouping
     {
         private IList<Achievement> Achievements { get; }
 
-        public AchievementManager(IList<Achievement> achievements)
+        public AchievementGrouping(IList<Achievement> achievements)
         {
             Achievements = achievements;
         }
