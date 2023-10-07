@@ -9,7 +9,9 @@ namespace SteamAchievementsRetrieving
         {
             { "English and British missions", "England" },
             { "Mewar Mission Tree", "Mewar" },
-            { "Spanish Mission Tree", "Spain" }
+            { "Spanish Mission Tree", "Spain" },
+            { "Japanese Daimyo", "Japan" },
+            { "Russian nation", "Russia" }
         };
 
         public string FindCountryMatching(string text)
