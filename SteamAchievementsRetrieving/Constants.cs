@@ -7,7 +7,7 @@
             AuthentificationKeyParam = "key",
             SteamIdParam = "steamid",
             LanguageParam = "l",
-            HeaderOfCsvFile = "Achievement;Description",
+            HeaderOfCsvFile = "Achievement;Description;Is dlc required?;",
             Separator = ";",
             CsvExtension = ".csv",
             Achievements = "Achievements ",
