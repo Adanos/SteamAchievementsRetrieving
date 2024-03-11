@@ -22,6 +22,7 @@ namespace SteamAchievementsRetrieving
 
         public SteamAchievementResponse GetAllAchievements()
         {
+            SteamAchievementResponse response = new SteamAchievementResponse();
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue(Constants.HeaderJsonType));
@@ -36,10 +37,11 @@ namespace SteamAchievementsRetrieving
             if (achievements.Result.IsSuccessStatusCode)
             {
                 var result = achievements.Result.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<SteamAchievementResponse>(result.Result);
+                response = JsonConvert.DeserializeObject<SteamAchievementResponse>(result.Result);
+                response.Success = true;
             }
 
-            return null;
+            return response;
         }
     }
 }
