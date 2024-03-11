@@ -1,4 +1,4 @@
-﻿namespace SteamAchievementsRetrieving.Models
+﻿namespace SteamAchievementsRetrieving.Models.FromGameStructure
 {
     public class EuropaUniversalisFilesStructureConfiguration
     {

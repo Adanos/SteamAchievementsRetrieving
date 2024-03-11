@@ -1,4 +1,4 @@
-﻿namespace SteamAchievementsRetrieving.Models
+﻿namespace SteamAchievementsRetrieving.Models.FromApi
 {
     public class SteamAchievementResponse
     {

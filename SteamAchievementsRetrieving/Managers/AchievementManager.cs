@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SteamAchievementsRetrieving.IO;
-using SteamAchievementsRetrieving.Models;
+using SteamAchievementsRetrieving.Models.FromApi;
 using SteamAchievementsRetrieving.Services;
 using System.Collections.Generic;
 using System.IO;

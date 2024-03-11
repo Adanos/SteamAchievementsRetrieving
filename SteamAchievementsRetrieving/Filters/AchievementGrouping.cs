@@ -1,4 +1,4 @@
-﻿using SteamAchievementsRetrieving.Models;
+﻿using SteamAchievementsRetrieving.Models.FromApi;
 using System.Collections.Generic;
 using System.Linq;
 
