@@ -11,6 +11,7 @@ namespace SteamAchievementsRetrieving.Managers
     {
         private readonly SteamAchievementConfiguration _steamAchievementConfiguration;
         private readonly FilenameCreator _filenameCreator;
+        public IList<Achievement> Achievements { get; private set; }
 
         public AchievementManager(IConfiguration configuration)
         {
@@ -18,34 +19,50 @@ namespace SteamAchievementsRetrieving.Managers
             _filenameCreator = new FilenameCreator(_steamAchievementConfiguration);  
         }
 
-        public IList<Achievement> GetAchievements()
+        public void CreateAchievements()
         {
             string pattern = _filenameCreator.CreateFilename(@"*");
             string[] files = Directory.GetFiles(_steamAchievementConfiguration.FilePathToSaveResult, pattern, SearchOption.TopDirectoryOnly);
-            IList<Achievement> achievements;
 
             if (files.Length > 0)
             {
-                ReadFileManager readFileManager = new ReadFileManager();
-                achievements = readFileManager.ReadAchievementsFromFile(files[0]);
+                Achievements = ReadAchievementsFromFile(files);
             }
             else
             {
                 SteamAchievementsRetrieving steamAchievementsRetrieving = new SteamAchievementsRetrieving(_steamAchievementConfiguration);
-                var results = steamAchievementsRetrieving.GetAllAchievements().PlayerStats;
-                achievements = results.Achievements;
-                AchievementGrouping achievementGrouping = new AchievementGrouping(achievements);
+                var results = steamAchievementsRetrieving.GetAllAchievements();
 
-                if (_steamAchievementConfiguration.IsAchieved == true)
-                    achievements = achievementGrouping.GetUnlockedAchievements();
-                else if (_steamAchievementConfiguration.IsAchieved == false)
-                    achievements = achievementGrouping.GetLockedAchievements();
+                if (results.Success)
+                {
+                    Achievements = results.PlayerStats.Achievements;
+                    FilterAchievements();
 
-                SaveFileManager saveFileManager = new SaveFileManager(_filenameCreator.CreateFullPath(results.GameName), achievements);
-                saveFileManager.SaveCsvFile();
+                    SaveAchievementsToFile(results);
+                }
             }
+        }
 
-            return achievements;
+        private void FilterAchievements()
+        {
+            AchievementGrouping achievementGrouping = new AchievementGrouping(Achievements);
+
+            if (_steamAchievementConfiguration.IsAchieved == true)
+                Achievements = achievementGrouping.GetUnlockedAchievements();
+            else if (_steamAchievementConfiguration.IsAchieved == false)
+                Achievements = achievementGrouping.GetLockedAchievements();
+        }
+
+        private IList<Achievement> ReadAchievementsFromFile(string[] files)
+        {
+            ReadFileManager readFileManager = new ReadFileManager();
+            return readFileManager.ReadAchievementsFromFile(files[0]);
+        }
+
+        private void SaveAchievementsToFile(SteamAchievementResponse results)
+        {
+            SaveFileManager saveFileManager = new SaveFileManager(_filenameCreator.CreateFullPath(results.PlayerStats.GameName), Achievements);
+            saveFileManager.SaveCsvFile();
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SteamAchievementsRetrieving.Managers;
-using SteamAchievementsRetrieving.Models;
-using System.Collections.Generic;
 
 namespace SteamAchievementsRetrieving
 {
@@ -16,10 +14,13 @@ namespace SteamAchievementsRetrieving
                .Build();
 
             AchievementManager achievementManager = new AchievementManager(Configuration);
-            IList<Achievement> achievements = achievementManager.GetAchievements();
+            achievementManager.CreateAchievements();
 
-            AchievementMatrixCreator achievementMatrixCreator = new AchievementMatrixCreator(achievements);
-            achievementMatrixCreator.CreateMatrix();
+            if (achievementManager.Achievements != null)
+            {
+                AchievementMatrixCreator achievementMatrixCreator = new AchievementMatrixCreator(achievementManager.Achievements);
+                achievementMatrixCreator.CreateMatrix();
+            }     
         }
     }
 }
