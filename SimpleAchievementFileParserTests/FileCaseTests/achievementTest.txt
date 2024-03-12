@@ -1,7 +1,7 @@
 #############################
 # test simple achievement
 #############################
-achievement_for_the_glory = {
+achievement_test = {
 	id = 15
 	localization = NEW_ACHIEVEMENT_1_2
 	
@@ -14,7 +14,7 @@ achievement_for_the_glory = {
 	
 	happened = {
 		custom_trigger_tooltip = {
-			tooltip = achievement_for_the_glory_tooltip
+			tooltip = achievement_test_tooltip
 			has_country_flag = have_diploannexed
 		}
 	}
