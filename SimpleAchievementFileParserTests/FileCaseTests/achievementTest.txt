@@ -1,0 +1,21 @@
+#############################
+# test simple achievement
+#############################
+achievement_for_the_glory = {
+	id = 15
+	localization = NEW_ACHIEVEMENT_1_2
+	
+	possible = {
+		normal_or_historical_nations = yes
+		normal_province_values = yes
+		ironman = yes
+		start_date = 1444.11.11
+	}
+	
+	happened = {
+		custom_trigger_tooltip = {
+			tooltip = achievement_for_the_glory_tooltip
+			has_country_flag = have_diploannexed
+		}
+	}
+}
