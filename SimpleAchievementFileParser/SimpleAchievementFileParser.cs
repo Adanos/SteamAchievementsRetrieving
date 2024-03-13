@@ -1,4 +1,5 @@
 ﻿using SimpleAchievementFileParser.Model;
+using System.Collections.Generic;
 
 namespace SimpleAchievementFileParser
 {
@@ -21,7 +22,7 @@ namespace SimpleAchievementFileParser
             using var reader = new StreamReader(fileStream);
             line = reader.ReadLine();
             Achievement currentAchievement = null;
-            Queue<string> queue = new Queue<string>();
+            Queue<KeyValuePair<string, string>> queue = new Queue<KeyValuePair<string, string>>();
             while ((line = reader.ReadLine()) != null)
             {
                 if (line.FirstOrDefault() == '#' || line == string.Empty) continue;
@@ -38,41 +39,44 @@ namespace SimpleAchievementFileParser
                 {
                     currentAchievement.Localization = line.Split('=')[1].TrimStart().TrimEnd();
                 }
-                else if (line.Contains("visible"))
-                {
-                    currentAchievement.VisibleRequirements = new VisibleRequirements();
-                    queue.Enqueue("visible");
-                }
+                //else if (line.Contains("visible"))
+                //{
+                //    currentAchievement.VisibleRequirements = new VisibleRequirements();
+                //    queue.Enqueue("visible");
+                //}
                 else if (line.Contains("has_dlc"))
                 {
                     string dlcName = line.Split('=')[1].Replace("\"", "").TrimStart().TrimEnd();
                     DlcNames.Add(dlcName);
                     //currentAchievement.VisibleRequirements.HasAllDlc.Add(dlcName);
-                    queue.Enqueue("has_dlc");
+                    queue.Enqueue(new KeyValuePair<string, string>("has_dlc", dlcName));
                 }
                 else if (line.Contains("{"))
                 {
                     string token = line.Split('=')[0].TrimStart().TrimEnd();
-                    queue.Enqueue(token);
-                    queue.Enqueue("{");
+                    string value = line.Split('=')[1].TrimStart().TrimEnd();
+                    queue.Enqueue(new KeyValuePair<string, string>(token, value));
+                    queue.Enqueue(new KeyValuePair<string, string>("{", ""));
 
                     if (line.Contains("}"))
                     {
                         token = line.Split('=')[1].TrimStart().TrimEnd().Replace("{ ", "");
-                        queue.Enqueue(token);
-                        queue.Enqueue("}");
+                        value = line.Split('=')[2].TrimStart().TrimEnd().Replace(" }", "");
+                        queue.Enqueue(new KeyValuePair<string, string>(token, value));
+                        queue.Enqueue(new KeyValuePair<string, string>("}", ""));
                         //string token = queue.Dequeue();
                     }
                 }
                 else if (line.Contains("}"))
                 {
-                    queue.Enqueue("}");
+                    queue.Enqueue(new KeyValuePair<string, string>("}", ""));
                     //string token = queue.Dequeue();
                 }
                 else if (line.Contains("="))
                 {
                     string token = line.Split('=')[0].TrimStart().TrimEnd();
-                    queue.Enqueue(token);
+                    string value = line.Split('=')[1].TrimStart().TrimEnd();
+                    queue.Enqueue(new KeyValuePair<string, string>(token, value));
                 }
             }
 
@@ -81,68 +85,69 @@ namespace SimpleAchievementFileParser
             return achievements;
         }
 
-        public INodeAddAble CreateAchievements(INodeAddAble currentAchievement, Queue<string> queue)
+        public INodeAddAble CreateAchievements(INodeAddAble currentAchievement, Queue<KeyValuePair<string, string>> queue)
         {
             INodeAddAble achievement = currentAchievement;
             INodeAddAble parentObject = null;
             INodeAddAble currentObject = null;
             INodeAddAble node = null;
             Stack<INodeAddAble> nodes = new Stack<INodeAddAble>();
-            Stack<string> simpleNodes = new Stack<string>();
+            Stack<KeyValuePair<string, string>> simpleNodes = new Stack<KeyValuePair<string, string>>();
             while (queue.Count > 0)
             {
-                string token = queue.Dequeue();
+                KeyValuePair<string, string> token = queue.Dequeue();
 
-                if (token == "possible")
+                if (token.Key == "possible")
                 {
                     currentObject = new Possible();
                     nodes.Push(currentObject);
                 }
-                else if (token == "happened")
+                else if (token.Key == "happened")
                 {
                     currentObject = new Happened();
                     nodes.Push(currentObject);
                 }
-                else if (token == "custom_trigger_tooltip")
+                else if (token.Key == "custom_trigger_tooltip")
                 {
                     parentObject = currentObject;
                     currentObject = new CustomTriggerTooltip();
                     parentObject.Add(currentObject);
                     nodes.Push(currentObject);
                 }
-                else if (token == "NOT")
+                else if (token.Key == "NOT")
                 {
                     parentObject = currentObject;
                     currentObject = new NotModel();
                     parentObject.Add(currentObject);
                     nodes.Push(currentObject);
                 }
-                else if (token == "OR")
+                else if (token.Key == "OR")
                 {
                     parentObject = currentObject;
                     currentObject = new OrModel();
                     parentObject.Add(currentObject);
                     nodes.Push(currentObject);
                 }
-                else if (token == "{" && (simpleNodes.Count == 0 || simpleNodes.Count > 0 && simpleNodes.Peek() != "{")) simpleNodes.Push("{");
-                else if (token == "}")
+                else if (token.Key == "{" && (simpleNodes.Count == 0 || simpleNodes.Count > 0 && simpleNodes.Peek().Key != "{")) simpleNodes.Push(new KeyValuePair<string, string>("{", ""));
+                else if (token.Key == "}")
                 {
                     if (nodes.Count > 0)
                         node = nodes.Pop();
                     while (simpleNodes.Count > 0)
                     {
-                        if (simpleNodes.Peek() == "{")
+                        if (simpleNodes.Peek().Key == "{")
                         {
                             simpleNodes.Pop();
                             break;
                         }
-                        node.Add(simpleNodes.Pop(), "pop");
+                        var keyValuePair = simpleNodes.Pop();
+                        node.Add(keyValuePair.Key, keyValuePair.Value);
                     }
                     if (nodes.Count == 0)
                         currentAchievement.Add(node);
                     currentObject = parentObject;
                 }
-                else if (simpleNodes.Count == 0 || simpleNodes.Count > 0 && token != "{") simpleNodes.Push(token);
+                else if (simpleNodes.Count == 0 || simpleNodes.Count > 0 && token.Key != "{") simpleNodes.Push(token);
             }
             return achievement;
         }

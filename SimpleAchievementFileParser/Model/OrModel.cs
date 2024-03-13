@@ -6,7 +6,7 @@
 
         public void Add(string token, string value)
         {
-            Names.Add(token);
+            Names.Add(value);
         }
 
         void INodeAddAble.Add(INodeAddAble possible)

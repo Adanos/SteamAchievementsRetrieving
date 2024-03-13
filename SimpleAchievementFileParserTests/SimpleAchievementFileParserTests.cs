@@ -43,10 +43,11 @@ namespace SimpleAchievementFileParserTests
             using var reader = new StreamReader(fileStream);
             string line = reader.ReadLine();
 
-            Queue<string> queue = new Queue<string>();
+            Queue<KeyValuePair<string, string>> queue = new Queue<KeyValuePair<string, string>>();
             while ((line = reader.ReadLine()) != null)
             {
-                queue.Enqueue(line);
+                string[] values = line.Split(',');
+                queue.Enqueue(new KeyValuePair<string, string>(values[0], values[1] ?? null));
             }
 
             SimpleAchievementFileParser.SimpleAchievementFileParser simpleParser = new SimpleAchievementFileParser.SimpleAchievementFileParser("FileCaseTests\\achievementTest2.txt");

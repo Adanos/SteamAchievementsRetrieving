@@ -2,11 +2,12 @@
 {
     public class NotModel : INodeAddAble
     {
-        public string Name { get; set; }
+        public string NumOfCustomNations { get; set; } //num_of_custom_nations
 
         public void Add(string token, string value)
         {
-            Name = token;
+            if (token == "num_of_custom_nations")
+                NumOfCustomNations = value;
         }
 
         void INodeAddAble.Add(INodeAddAble possible)
