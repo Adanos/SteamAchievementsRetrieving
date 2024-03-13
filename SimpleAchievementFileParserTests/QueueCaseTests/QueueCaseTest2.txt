@@ -1,26 +1,26 @@
 
-possible
-{
-NOT
-{
-num_of_custom_nations
-}
-normal_or_historical_nations
-normal_province_values
-ironman
-start_date
-OR
-{
-has_dlc
-has_dlc
-}
-}
-happened
-{
-custom_trigger_tooltip
-{
-tooltip
-has_country_flag
-}
-}
-}
+possible, {}
+{, 
+NOT, 
+{, 
+num_of_custom_nations, 1
+}, 
+normal_or_historical_nations, no 
+normal_province_values, yes 
+ironman, yes
+start_date, 1444
+OR, 
+{, 
+has_dlc, Dlc1
+has_dlc, Dlc2
+}, 
+}, 
+happened, 
+{,
+custom_trigger_tooltip, 
+{, 
+tooltip, tooltip2
+has_country_flag, flag
+}, 
+},
+},
