@@ -3,7 +3,6 @@
     public class VisibleRequirements : INodeAddAble
     {
         public IList<string> HasAllDlc { get; set; } = new List<string>();
-        //public IList<string> HasOneOfDlc { get; set; }
 
         public OrModel HasOneOfDlc { get; set; } //OR
 

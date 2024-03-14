@@ -3,10 +3,8 @@
     public class Happened : INodeAddAble
     {
         public CustomTriggerTooltip CustomTriggerTooltip { get; set; } //custom_trigger_tooltip
-        public void Add(string token, string value = null)
+        public void Add(string token, string value)
         {
-            if (token == "custom_trigger_tooltip")
-                CustomTriggerTooltip = new CustomTriggerTooltip();
         }
 
         void INodeAddAble.Add(INodeAddAble node)
