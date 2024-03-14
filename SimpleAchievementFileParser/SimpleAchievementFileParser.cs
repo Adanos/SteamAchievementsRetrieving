@@ -107,6 +107,11 @@ namespace SimpleAchievementFileParser
                     currentObject = new Happened();
                     nodes.Push(currentObject);
                 }
+                else if (token.Key == "visible")
+                {
+                    currentObject = new VisibleRequirements();
+                    nodes.Push(currentObject);
+                }
                 else if (token.Key == "custom_trigger_tooltip")
                 {
                     parentObject = currentObject;

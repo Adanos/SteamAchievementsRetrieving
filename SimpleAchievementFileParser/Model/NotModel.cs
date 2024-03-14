@@ -10,7 +10,7 @@
                 NumOfCustomNations = value;
         }
 
-        void INodeAddAble.Add(INodeAddAble possible)
+        void INodeAddAble.Add(INodeAddAble node)
         {
             throw new NotImplementedException();
         }

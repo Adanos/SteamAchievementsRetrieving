@@ -16,14 +16,14 @@
                 Localization = value;
         }
 
-        void INodeAddAble.Add(INodeAddAble possible)
+        void INodeAddAble.Add(INodeAddAble node)
         {
-            if (possible is Possible)
-                Possible = possible as Possible;
-            else if (possible is Happened)
-                Happened = possible as Happened;
-            else if (possible is VisibleRequirements)
-                VisibleRequirements = possible as VisibleRequirements;
+            if (node is Possible)
+                Possible = node as Possible;
+            else if (node is Happened)
+                Happened = node as Happened;
+            else if (node is VisibleRequirements)
+                VisibleRequirements = node as VisibleRequirements;
         }
     }
 }

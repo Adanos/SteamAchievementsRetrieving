@@ -2,17 +2,20 @@
 {
     public class VisibleRequirements : INodeAddAble
     {
-        public IList<string> HasAllDlc { get; set; }
-        public IList<string> HasOneOfDlc { get; set; }
+        public IList<string> HasAllDlc { get; set; } = new List<string>();
+        //public IList<string> HasOneOfDlc { get; set; }
+
+        public OrModel HasOneOfDlc { get; set; } //OR
 
         public void Add(string token, string value)
         {
             HasAllDlc.Add(value);
         }
 
-        void INodeAddAble.Add(INodeAddAble possible)
+        void INodeAddAble.Add(INodeAddAble node)
         {
-            throw new NotImplementedException();
+            if (node is OrModel && HasOneOfDlc == null)
+                HasOneOfDlc = node as OrModel;
         }
     }
 }
