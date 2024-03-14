@@ -9,9 +9,9 @@
                 CustomTriggerTooltip = new CustomTriggerTooltip();
         }
 
-        void INodeAddAble.Add(INodeAddAble possible)
+        void INodeAddAble.Add(INodeAddAble node)
         {
-            CustomTriggerTooltip = possible as CustomTriggerTooltip;
+            CustomTriggerTooltip = node as CustomTriggerTooltip;
         }
     }
 }

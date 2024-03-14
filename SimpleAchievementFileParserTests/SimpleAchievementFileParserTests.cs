@@ -59,5 +59,21 @@ namespace SimpleAchievementFileParserTests
             Assert.IsNotNull(result.Possible.HasOneOfDlc);
             Assert.AreEqual(2, result.Possible.HasOneOfDlc.Names.Count);
         }
+
+        [Test]
+        public void SimpleAchievementFileParser_ParseFileWithTwoOrsInVisible_ReturnObject()
+        {
+            SimpleAchievementFileParser.SimpleAchievementFileParser simpleParser = new SimpleAchievementFileParser.SimpleAchievementFileParser("FileCaseTests\\achievementTwoOrsInVisibleTest.txt");
+
+            var result = simpleParser.ParseFile();
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(26, result.FirstOrDefault()?.Id);
+            Assert.AreEqual("NEW_ACHIEVEMENT_4_8", result.FirstOrDefault()?.Localization);
+            Assert.IsNotNull(result.FirstOrDefault()?.VisibleRequirements?.HasOneOfDlc);
+            var dlcNames = result.FirstOrDefault()?.VisibleRequirements?.HasOneOfDlc?.Names;
+            Assert.AreEqual(2, dlcNames?.Count);
+            Assert.AreEqual("Dlc4", dlcNames?.FirstOrDefault(x => x.Key == "has_dlc").Value);
+            Assert.AreEqual("Dlc2", dlcNames?.LastOrDefault(x => x.Key == "has_dlc").Value);
+        }
     }
 }

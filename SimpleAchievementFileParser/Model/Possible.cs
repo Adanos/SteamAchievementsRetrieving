@@ -16,12 +16,12 @@
                 NormalProvinceValues = value;
         }
 
-        void INodeAddAble.Add(INodeAddAble possible)
+        void INodeAddAble.Add(INodeAddAble node)
         {
-            if (possible is NotModel)
-                NotModel = possible as NotModel;
-            else if (possible is OrModel)
-                HasOneOfDlc = possible as OrModel;
+            if (node is NotModel)
+                NotModel = node as NotModel;
+            else if (node is OrModel)
+                HasOneOfDlc = node as OrModel;
         }
     }
 }

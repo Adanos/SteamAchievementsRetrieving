@@ -2,14 +2,14 @@
 {
     public class OrModel : INodeAddAble
     {
-        public List<string> Names { get; set; } = new List<string>();
+        public List<KeyValuePair<string, string>> Names { get; set; } = new List<KeyValuePair<string, string>>();
 
         public void Add(string token, string value)
         {
-            Names.Add(value);
+            Names.Add(new KeyValuePair<string, string>(token, value));
         }
 
-        void INodeAddAble.Add(INodeAddAble possible)
+        void INodeAddAble.Add(INodeAddAble node)
         {
             throw new NotImplementedException();
         }

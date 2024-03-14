@@ -3,6 +3,6 @@
     public interface INodeAddAble
     {
         void Add(string token, string value);
-        void Add(INodeAddAble possible);
+        void Add(INodeAddAble node);
     }
 }
