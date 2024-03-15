@@ -1,4 +1,5 @@
-﻿using SteamAchievementsRetrieving.Models.FromApi;
+﻿using SteamAchievementsRetrieving.Models;
+using SteamAchievementsRetrieving.Models.FromApi;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -44,7 +45,7 @@ namespace SteamAchievementsRetrieving
             Matrix = Matrix.OrderBy(x => x.Key).OrderByDescending(x => x.Value.Count).ToDictionary(x => x.Key, x => x.Value);
         }
 
-        private void UpdateMatrixByCountry(Achievement achievement, string country)
+        private void UpdateMatrixByCountry(AchievementResponse achievement, string country)
         {
             bool exists = Matrix.TryGetValue(country, out List<string> value);
             if (exists)

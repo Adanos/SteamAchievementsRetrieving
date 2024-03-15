@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using SteamAchievementsRetrieving;
-using SteamAchievementsRetrieving.Models.FromApi;
+using SteamAchievementsRetrieving.Models;
 using System.Collections.Generic;
 
 namespace SteamAchievementsRetrievingTests

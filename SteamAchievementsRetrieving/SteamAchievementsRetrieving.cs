@@ -33,12 +33,13 @@ namespace SteamAchievementsRetrieving
             httpValues.Add(Constants.LanguageParam, _steamAchievementConfiguration.Language);
 
             var achievements = _client.GetAsync(httpValues.ToString());
+            response.StatusCode = achievements.Result.StatusCode;
 
             if (achievements.Result.IsSuccessStatusCode)
             {
                 var result = achievements.Result.Content.ReadAsStringAsync();
                 response = JsonConvert.DeserializeObject<SteamAchievementResponse>(result.Result);
-                response.Success = true;
+                response.Success = true;   
             }
 
             return response;

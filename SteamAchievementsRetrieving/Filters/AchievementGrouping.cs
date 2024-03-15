@@ -6,19 +6,19 @@ namespace SteamAchievementsRetrieving.Services
 {
     public class AchievementGrouping
     {
-        private IList<Achievement> Achievements { get; }
+        private IList<AchievementResponse> Achievements { get; }
 
-        public AchievementGrouping(IList<Achievement> achievements)
+        public AchievementGrouping(IList<AchievementResponse> achievements)
         {
             Achievements = achievements;
         }
 
-        public IList<Achievement> GetUnlockedAchievements()
+        public IList<AchievementResponse> GetUnlockedAchievements()
         {
             return Achievements.Where(achievement => achievement.Achieved).ToList();
         }
 
-        public IList<Achievement> GetLockedAchievements()
+        public IList<AchievementResponse> GetLockedAchievements()
         {
             return Achievements.Where(achievement => !achievement.Achieved).ToList();
         }

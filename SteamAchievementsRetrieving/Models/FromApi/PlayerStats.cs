@@ -6,7 +6,7 @@ namespace SteamAchievementsRetrieving.Models.FromApi
     {
         public string SteamId { get; set; }
         public string GameName { get; set; }
-        public IList<Achievement> Achievements { get; set; }
+        public IList<AchievementResponse> Achievements { get; set; }
         public bool Success { get; set; }
     }
 }
