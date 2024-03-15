@@ -1,6 +1,8 @@
-﻿namespace SteamAchievementsRetrieving.Models.FromApi
+﻿using System.Collections.Generic;
+
+namespace SteamAchievementsRetrieving.Models.FromApi
 {
-    public class Achievement
+    public class AchievementResponse
     {
         public bool Achieved { get; set; }
         public string Name { get; set; }
