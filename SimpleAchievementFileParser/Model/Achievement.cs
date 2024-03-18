@@ -4,9 +4,9 @@
     {
         public int Id { get; set; }
         public string Localization { get; set; }
-        public Possible Possible { get; set; }
-        public Happened Happened { get; set; }
-        public VisibleRequirements VisibleRequirements { get; set; }
+        public Possible? Possible { get; set; }
+        public Happened? Happened { get; set; }
+        public VisibleRequirements? VisibleRequirements { get; set; }
 
         public void Add(string token, string value)
         {

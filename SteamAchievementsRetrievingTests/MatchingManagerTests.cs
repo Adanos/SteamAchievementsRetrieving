@@ -29,7 +29,7 @@ namespace SteamAchievementsRetrievingTests
         {
             MatchingManager matchingManager = new MatchingManager();
             string result = matchingManager.FindCountryMatching(text);
-            Assert.AreEqual(expectedValue, result);
+            Assert.That(result, Is.EqualTo(expectedValue));
         }
 
         [TestCase("Example text.", null)]
@@ -40,7 +40,7 @@ namespace SteamAchievementsRetrievingTests
             MatchingManager matchingManager = new MatchingManager();
 
             string result = matchingManager.FindPhrasesReferringToCountry(description);
-            Assert.AreEqual(expectedValue, result);
+            Assert.That(result, Is.EqualTo(expectedValue));
         }
     }
 }

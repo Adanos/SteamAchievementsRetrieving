@@ -4,9 +4,9 @@
     {
         public string NormalOrHistoricalNations { get; set; } //normal_or_historical_nations
         public string NormalProvinceValues { get; set; } // normal_province_values
-        public NotModel NotModel { get; set; } // NOT
+        public NotModel? NotModel { get; set; } // NOT
 
-        public OrModel HasOneOfDlc { get; set; } //OR
+        public OrModel? HasOneOfDlc { get; set; } //OR
 
         public void Add(string token, string value)
         {

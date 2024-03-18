@@ -11,7 +11,7 @@ namespace SimpleAchievementFileParserTests
             SimpleAchievementFileParser.SimpleAchievementFileParser simpleParser = new SimpleAchievementFileParser.SimpleAchievementFileParser("FileCaseTests\\achievementOnlyCommentaryTest.txt");
 
             var result = simpleParser.ParseFile();
-            Assert.AreEqual(0, result.Count);
+            Assert.That(result.Count, Is.EqualTo(0));
         }
 
         [Test]
@@ -20,9 +20,9 @@ namespace SimpleAchievementFileParserTests
             SimpleAchievementFileParser.SimpleAchievementFileParser simpleParser = new SimpleAchievementFileParser.SimpleAchievementFileParser("FileCaseTests\\achievementTest.txt");
 
             var result = simpleParser.ParseFile();
-            Assert.AreEqual(1, result.Count);
-            Assert.AreEqual(15, result.FirstOrDefault()?.Id);
-            Assert.AreEqual("NEW_ACHIEVEMENT_1_2", result.FirstOrDefault()?.Localization);
+            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result.FirstOrDefault()?.Id, Is.EqualTo(15));
+            Assert.That(result.FirstOrDefault()?.Localization, Is.EqualTo("NEW_ACHIEVEMENT_1_2"));
         }
 
         [Test]
@@ -31,9 +31,9 @@ namespace SimpleAchievementFileParserTests
             SimpleAchievementFileParser.SimpleAchievementFileParser simpleParser = new SimpleAchievementFileParser.SimpleAchievementFileParser("FileCaseTests\\achievementTest2.txt");
 
             var result = simpleParser.ParseFile();
-            Assert.AreEqual(1, result.Count);
-            Assert.AreEqual(17, result.FirstOrDefault()?.Id);
-            Assert.AreEqual("NEW_ACHIEVEMENT_7_2", result.FirstOrDefault()?.Localization);
+            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result.FirstOrDefault()?.Id, Is.EqualTo(17));
+            Assert.That(result.FirstOrDefault()?.Localization, Is.EqualTo("NEW_ACHIEVEMENT_7_2"));
         }
 
         [Test]
@@ -53,11 +53,11 @@ namespace SimpleAchievementFileParserTests
             SimpleAchievementFileParser.SimpleAchievementFileParser simpleParser = new SimpleAchievementFileParser.SimpleAchievementFileParser("FileCaseTests\\achievementTest2.txt");
             Achievement result = new Achievement() { Id = 17, Localization = "NEW_ACHIEVEMENT_7_2" };
             result = simpleParser.CreateAchievements(result, queue) as Achievement;
-            Assert.AreEqual(17, result.Id);
-            Assert.AreEqual("NEW_ACHIEVEMENT_7_2", result.Localization);
-            Assert.IsNotNull(result.Possible.NotModel);
-            Assert.IsNotNull(result.Possible.HasOneOfDlc);
-            Assert.AreEqual(2, result.Possible.HasOneOfDlc.Names.Count);
+            Assert.That(result?.Id, Is.EqualTo(17));
+            Assert.That(result?.Localization, Is.EqualTo("NEW_ACHIEVEMENT_7_2"));
+            Assert.That(result?.Possible?.NotModel, Is.Not.Null);
+            Assert.That(result?.Possible?.HasOneOfDlc, Is.Not.Null);
+            Assert.That(result?.Possible?.HasOneOfDlc?.Names.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -66,14 +66,14 @@ namespace SimpleAchievementFileParserTests
             SimpleAchievementFileParser.SimpleAchievementFileParser simpleParser = new SimpleAchievementFileParser.SimpleAchievementFileParser("FileCaseTests\\achievementTwoOrsInVisibleTest.txt");
 
             var result = simpleParser.ParseFile();
-            Assert.AreEqual(1, result.Count);
-            Assert.AreEqual(26, result.FirstOrDefault()?.Id);
-            Assert.AreEqual("NEW_ACHIEVEMENT_4_8", result.FirstOrDefault()?.Localization);
-            Assert.IsNotNull(result.FirstOrDefault()?.VisibleRequirements?.HasOneOfDlc);
+            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result.FirstOrDefault()?.Id, Is.EqualTo(26));
+            Assert.That(result.FirstOrDefault()?.Localization, Is.EqualTo("NEW_ACHIEVEMENT_4_8"));
+            Assert.That(result.FirstOrDefault()?.VisibleRequirements?.HasOneOfDlc, Is.Not.Null);
             var dlcNames = result.FirstOrDefault()?.VisibleRequirements?.HasOneOfDlc?.Names;
-            Assert.AreEqual(2, dlcNames?.Count);
-            Assert.AreEqual("Dlc4", dlcNames?.FirstOrDefault(x => x.Key == "has_dlc").Value);
-            Assert.AreEqual("Dlc2", dlcNames?.LastOrDefault(x => x.Key == "has_dlc").Value);
+            Assert.That(dlcNames?.Count, Is.EqualTo(2));
+            Assert.That(dlcNames?.FirstOrDefault(x => x.Key == "has_dlc").Value, Is.EqualTo("Dlc4"));
+            Assert.That(dlcNames?.LastOrDefault(x => x.Key == "has_dlc").Value, Is.EqualTo("Dlc2"));
         }
     }
 }

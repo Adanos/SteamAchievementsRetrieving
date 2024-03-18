@@ -28,10 +28,10 @@ namespace SteamAchievementsRetrievingTests
             achievementMatrixCreator.CreateMatrix();
             achievementMatrixCreator.Matrix.TryGetValue("Knights", out List<string> values);
 
-            Assert.IsTrue(achievementMatrixCreator.Matrix.ContainsKey("Knights"));
-            Assert.IsFalse(achievementMatrixCreator.Matrix.ContainsKey("the Knights"));
-            Assert.IsFalse(achievementMatrixCreator.Matrix.ContainsKey("The Knights"));
-            Assert.AreEqual(2, values.Count);
+            Assert.That(achievementMatrixCreator.Matrix.ContainsKey("Knights"), Is.True);
+            Assert.That(achievementMatrixCreator.Matrix.ContainsKey("the Knights"), Is.False);
+            Assert.That(achievementMatrixCreator.Matrix.ContainsKey("The Knights"), Is.False);
+            Assert.That(values.Count, Is.EqualTo(2));
         }
 
         [Test]
@@ -41,9 +41,9 @@ namespace SteamAchievementsRetrievingTests
             achievementMatrixCreator.CreateMatrix();
             achievementMatrixCreator.Matrix.TryGetValue("Papal State", out List<string> values);
 
-            Assert.IsTrue(achievementMatrixCreator.Matrix.ContainsKey("Papal State"));
-            Assert.IsFalse(achievementMatrixCreator.Matrix.ContainsKey("Papacy"));
-            Assert.AreEqual(2, values.Count);
+            Assert.That(achievementMatrixCreator.Matrix.ContainsKey("Papal State"), Is.True);
+            Assert.That(achievementMatrixCreator.Matrix.ContainsKey("Papacy"), Is.False);
+            Assert.That(values.Count, Is.EqualTo(2));
         }
     }
 }
