@@ -2,7 +2,7 @@
 {
     public class Happened : INodeAddAble
     {
-        public CustomTriggerTooltip CustomTriggerTooltip { get; set; } //custom_trigger_tooltip
+        public CustomTriggerTooltip? CustomTriggerTooltip { get; set; } //custom_trigger_tooltip
         public void Add(string token, string value)
         {
         }

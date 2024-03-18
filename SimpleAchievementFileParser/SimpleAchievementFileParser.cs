@@ -1,5 +1,4 @@
 ﻿using SimpleAchievementFileParser.Model;
-using System.Collections.Generic;
 
 namespace SimpleAchievementFileParser
 {
@@ -21,7 +20,7 @@ namespace SimpleAchievementFileParser
             var fileStream = new FileStream(_fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var reader = new StreamReader(fileStream);
             line = reader.ReadLine();
-            Achievement currentAchievement = null;
+            Achievement? currentAchievement = null;
             Queue<KeyValuePair<string, string>> queue = new Queue<KeyValuePair<string, string>>();
             while ((line = reader.ReadLine()) != null)
             {
@@ -88,10 +87,10 @@ namespace SimpleAchievementFileParser
         public INodeAddAble CreateAchievements(INodeAddAble currentAchievement, Queue<KeyValuePair<string, string>> queue)
         {
             INodeAddAble achievement = currentAchievement;
-            INodeAddAble parentObject = null;
-            INodeAddAble currentObject = null;
-            INodeAddAble node = null;
-            Stack<INodeAddAble> nodes = new Stack<INodeAddAble>();
+            INodeAddAble? parentObject = null;
+            INodeAddAble? currentObject = null;
+            INodeAddAble? node = null;
+            Stack<INodeAddAble> nodes = new();
             Stack<KeyValuePair<string, string>> simpleNodes = new Stack<KeyValuePair<string, string>>();
             while (queue.Count > 0)
             {

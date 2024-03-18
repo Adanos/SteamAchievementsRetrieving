@@ -2,7 +2,7 @@
 {
     public class OrModel : INodeAddAble
     {
-        public List<KeyValuePair<string, string>> Names { get; set; } = new List<KeyValuePair<string, string>>();
+        public List<KeyValuePair<string, string>> Names { get; set; } = [];
 
         public void Add(string token, string value)
         {
