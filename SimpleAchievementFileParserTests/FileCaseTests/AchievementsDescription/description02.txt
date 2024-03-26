@@ -1,0 +1,4 @@
+NEW_ACHIEVEMENT_1_NAME:0 "Test name"
+NEW_ACHIEVEMENT_1_DESC:0 "Test description"
+NEW_ACHIEVEMENT_2_NAME:0 "Second test name"
+NEW_ACHIEVEMENT_2_DESC:0 "Second test description"

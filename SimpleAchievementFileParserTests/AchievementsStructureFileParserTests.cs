@@ -3,21 +3,21 @@ using SimpleAchievementFileParser.Model;
 
 namespace SimpleAchievementFileParserTests
 {
-    public class SimpleAchievementFileParserTests
+    public class AchievementsStructureFileParserTests
     {
         [Test]
-        public void SimpleAchievementFileParser_ParseFileWithOnlyCommentary_ReturnObject()
+        public void AchievementsStructureFileParser_ParseFileWithOnlyCommentary_ReturnObject()
         {
-            SimpleAchievementFileParser.SimpleAchievementFileParser simpleParser = new SimpleAchievementFileParser.SimpleAchievementFileParser("FileCaseTests\\achievementOnlyCommentaryTest.txt");
+            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementOnlyCommentaryTest.txt");
 
             var result = simpleParser.ParseFile();
             Assert.That(result.Count, Is.EqualTo(0));
         }
 
         [Test]
-        public void SimpleAchievementFileParser_ParseSimpleFile_ReturnObject()
+        public void AchievementsStructureFileParser_ParseSimpleFile_ReturnObject()
         {
-            SimpleAchievementFileParser.SimpleAchievementFileParser simpleParser = new SimpleAchievementFileParser.SimpleAchievementFileParser("FileCaseTests\\achievementTest.txt");
+            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementTest.txt");
 
             var result = simpleParser.ParseFile();
             Assert.That(result.Count, Is.EqualTo(1));
@@ -26,9 +26,9 @@ namespace SimpleAchievementFileParserTests
         }
 
         [Test]
-        public void SimpleAchievementFileParser_ParseFile_ReturnObject()
+        public void AchievementsStructureFileParser_ParseFile_ReturnObject()
         {
-            SimpleAchievementFileParser.SimpleAchievementFileParser simpleParser = new SimpleAchievementFileParser.SimpleAchievementFileParser("FileCaseTests\\achievementTest2.txt");
+            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementTest2.txt");
 
             var result = simpleParser.ParseFile();
             Assert.That(result.Count, Is.EqualTo(1));
@@ -37,7 +37,7 @@ namespace SimpleAchievementFileParserTests
         }
 
         [Test]
-        public void SimpleAchievementFileParser_CreateAchievements_ReturnObject()
+        public void AchievementsStructureFileParser_CreateAchievements_ReturnObject()
         {
             var fileStream = new FileStream("QueueCaseTests\\QueueCaseTest2.txt", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var reader = new StreamReader(fileStream);
@@ -50,7 +50,7 @@ namespace SimpleAchievementFileParserTests
                 queue.Enqueue(new KeyValuePair<string, string>(values[0], values[1] ?? null));
             }
 
-            SimpleAchievementFileParser.SimpleAchievementFileParser simpleParser = new SimpleAchievementFileParser.SimpleAchievementFileParser("FileCaseTests\\achievementTest2.txt");
+            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementTest2.txt");
             Achievement result = new Achievement() { Id = 17, Localization = "NEW_ACHIEVEMENT_7_2" };
             result = simpleParser.CreateAchievements(result, queue) as Achievement;
             Assert.That(result?.Id, Is.EqualTo(17));
@@ -61,9 +61,9 @@ namespace SimpleAchievementFileParserTests
         }
 
         [Test]
-        public void SimpleAchievementFileParser_ParseFileWithTwoOrsInVisible_ReturnObject()
+        public void AchievementsStructureFileParser_ParseFileWithTwoOrsInVisible_ReturnObject()
         {
-            SimpleAchievementFileParser.SimpleAchievementFileParser simpleParser = new SimpleAchievementFileParser.SimpleAchievementFileParser("FileCaseTests\\achievementTwoOrsInVisibleTest.txt");
+            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementTwoOrsInVisibleTest.txt");
 
             var result = simpleParser.ParseFile();
             Assert.That(result.Count, Is.EqualTo(1));
