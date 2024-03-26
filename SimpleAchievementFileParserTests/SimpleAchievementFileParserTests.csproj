@@ -17,16 +17,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="FileCaseTests\achievementOnlyCommentaryTest.txt">
+    <None Update="FileCaseTests\AchievementsDescription\description01.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="FileCaseTests\achievementTest.txt">
+    <None Update="FileCaseTests\AchievementsDescription\description02.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="FileCaseTests\achievementTest2.txt">
+    <None Update="FileCaseTests\AchievementsDescription\description03.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="FileCaseTests\achievementTwoOrsInVisibleTest.txt">
+    <None Update="FileCaseTests\AchievementsStructure\achievementOnlyCommentaryTest.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FileCaseTests\AchievementsStructure\achievementTest.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FileCaseTests\AchievementsStructure\achievementTest2.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FileCaseTests\AchievementsStructure\achievementTwoOrsInVisibleTest.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="QueueCaseTests\QueueCaseTest2.txt">
@@ -35,6 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="FileCaseTests\AchievementsDescription\" />
     <Folder Include="QueueCaseTests\" />
   </ItemGroup>
 

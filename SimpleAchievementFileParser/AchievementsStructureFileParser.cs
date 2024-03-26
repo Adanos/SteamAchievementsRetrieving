@@ -2,12 +2,12 @@
 
 namespace SimpleAchievementFileParser
 {
-    public class SimpleAchievementFileParser
+    public class AchievementsStructureFileParser
     {
         public ISet<string> DlcNames { get; private set; }
         private readonly string _fileName;
 
-        public SimpleAchievementFileParser(string fileName)
+        public AchievementsStructureFileParser(string fileName)
         {
             _fileName = fileName;
             DlcNames = new HashSet<string>();
