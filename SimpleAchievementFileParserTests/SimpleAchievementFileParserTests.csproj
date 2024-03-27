@@ -38,6 +38,12 @@
     <None Update="FileCaseTests\AchievementsStructure\achievementTwoOrsInVisibleTest.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="FileCaseTests\AchievementsStructure\achievementWithProvinceIdTest.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="FileCaseTests\AchievementsStructure\twoAchievementsTest.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="QueueCaseTests\QueueCaseTest2.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

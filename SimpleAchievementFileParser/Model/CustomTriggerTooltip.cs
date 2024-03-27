@@ -4,6 +4,18 @@
     {
         public string Tooltip { get; set; } //tooltip 
         public string HasCountryFlag { get; set; } //has_country_flag 
+        private INodeAddAble? Parent;
+
+        public CustomTriggerTooltip(INodeAddAble? parent)
+        {
+            Parent = parent;
+        }
+
+        public INodeAddAble GetParent()
+        {
+            return Parent;
+        }
+
         public void Add(string token, string value)
         {
             if (token == "tooltip")
@@ -12,9 +24,14 @@
                 HasCountryFlag = value;
         }
 
+        public void SetParent(INodeAddAble node)
+        {
+           // throw new NotImplementedException();
+        }
+
         void INodeAddAble.Add(INodeAddAble node)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }

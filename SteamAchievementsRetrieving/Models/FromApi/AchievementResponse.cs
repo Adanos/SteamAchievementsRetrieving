@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace SteamAchievementsRetrieving.Models.FromApi
+﻿namespace SteamAchievementsRetrieving.Models.FromApi
 {
     public class AchievementResponse
     {
