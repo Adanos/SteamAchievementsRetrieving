@@ -1,17 +1,21 @@
 ﻿using Microsoft.Extensions.Configuration;
+using SimpleAchievementFileParser;
 using SteamAchievementsRetrieving.IO;
 using SteamAchievementsRetrieving.Models;
 using SteamAchievementsRetrieving.Models.FromApi;
+using SteamAchievementsRetrieving.Models.FromGameStructure;
 using SteamAchievementsRetrieving.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace SteamAchievementsRetrieving.Managers
 {
     internal class AchievementManager
     {
         private readonly SteamAchievementConfiguration _steamAchievementConfiguration;
+        private readonly EuropaUniversalisFilesStructureConfiguration _europaUniversalisFilesStructureConfiguration;
         private readonly FilenameCreator _filenameCreator;
         private IList<AchievementResponse> AchievementsResponse { get; set; }
         public IList<Achievement> Achievements { get; private set; }
@@ -19,6 +23,7 @@ namespace SteamAchievementsRetrieving.Managers
         public AchievementManager(IConfiguration configuration)
         {
             _steamAchievementConfiguration = configuration.GetSection(nameof(SteamAchievementConfiguration)).Get<SteamAchievementConfiguration>();
+            _europaUniversalisFilesStructureConfiguration = configuration.GetSection(nameof(EuropaUniversalisFilesStructureConfiguration)).Get<EuropaUniversalisFilesStructureConfiguration>();
             _filenameCreator = new FilenameCreator(_steamAchievementConfiguration);  
         }
 
@@ -52,9 +57,17 @@ namespace SteamAchievementsRetrieving.Managers
 
         private void MapAchievements()
         {
+            string gameDirectory = _europaUniversalisFilesStructureConfiguration.GameDirectory;
+            AchievementsDescriptionFileParser achievementsDescriptionFileParser = new(gameDirectory + _europaUniversalisFilesStructureConfiguration.AchievementsLocalisationPath);
+            AchievementsStructureFileParser achievementsStructureFileParser = new(gameDirectory + _europaUniversalisFilesStructureConfiguration.AchievementsRequirementsPath);
+            var descriptions = achievementsDescriptionFileParser.ParseFile();
+            var requirements = achievementsStructureFileParser.ParseFile();
+
             Achievements = [];
             foreach (var achievement in AchievementsResponse)
             {
+                //requirements.FirstOrDefault(x => x.);
+                //descriptions.ContainsKey(achievement.Name);
                 Achievements.Add(new Achievement()
                 {
                     Achieved = achievement.Achieved,

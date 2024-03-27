@@ -18,17 +18,18 @@ namespace SimpleAchievementFileParser
             var fileStream = new FileStream(_fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var reader = new StreamReader(fileStream);
             AchievementDescription? currentAchievementDescription = null;
-            string[] delimiters = ["_NAME:0 ", "_DESC:0 ", "_NAME:1 ", "_DESC:1 "];
+            string[] delimiters = ["_NAME:0 ", "_DESC:0 ", "_NAME:1 ", "_DESC:1 ", "_DESC:2 "];
 
             while ((line = reader.ReadLine()) != null)
             {
                 var splitedLine = line.Split(delimiters, StringSplitOptions.None);
+                string achievementId = splitedLine[0].Trim();
 
-                if (splitedLine[0].Contains(Constants.NewAchievement))
+                if (achievementId.Contains(Constants.NewAchievement))
                 {
-                    if (!achievementsDescriptions.ContainsKey(splitedLine[0]))
+                    if (!achievementsDescriptions.ContainsKey(achievementId))
                     {
-                        currentAchievementDescription = new AchievementDescription(splitedLine[0]);
+                        currentAchievementDescription = new AchievementDescription(achievementId);
 
                         achievementsDescriptions.Add(currentAchievementDescription.Id, currentAchievementDescription);
                     }

@@ -1,0 +1,35 @@
+#############################
+# test with token province_id achievement
+#############################
+achievement_with_token_province_id = {
+	id = 5
+	localization = NEW_ACHIEVEMENT_0_1
+	
+	visible = {
+		OR = {
+			tag = TAG
+		}
+	}
+	
+	provinces_to_highlight = {
+		OR = {
+			province_id = 2 # Two
+			province_id = 1 # One
+			province_id = 3 # Third
+		}
+	}
+	
+	possible = {
+		NOT = { num_of_custom_nations = 1 }
+		normal_or_historical_nations = yes
+		normal_province_values = yes
+		ironman = yes
+		start_date = 1444.11.11
+	}
+	
+	happened = {
+		OR = {
+			tag = TAG
+		}
+	}
+}
