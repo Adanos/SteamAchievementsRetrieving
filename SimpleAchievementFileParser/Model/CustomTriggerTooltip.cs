@@ -11,7 +11,7 @@
             Parent = parent;
         }
 
-        public INodeAddAble GetParent()
+        public INodeAddAble? GetParent()
         {
             return Parent;
         }
@@ -26,12 +26,11 @@
 
         public void SetParent(INodeAddAble node)
         {
-           // throw new NotImplementedException();
+            Parent = node;
         }
 
-        void INodeAddAble.Add(INodeAddAble node)
+        void INodeAddAble.Add(INodeAddAble? node)
         {
-            //throw new NotImplementedException();
         }
     }
 }

@@ -16,7 +16,7 @@
             Parent = parent;
         }
 
-        public INodeAddAble GetParent()
+        public INodeAddAble? GetParent()
         {
             return Parent;
         }
@@ -34,7 +34,7 @@
                 NormalProvinceValues = value;
         }
 
-        void INodeAddAble.Add(INodeAddAble node)
+        void INodeAddAble.Add(INodeAddAble? node)
         {
             if (node is NotModel)
                 NotModel = node as NotModel;

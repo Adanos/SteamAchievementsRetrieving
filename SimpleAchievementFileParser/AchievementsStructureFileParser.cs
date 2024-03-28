@@ -2,25 +2,18 @@
 
 namespace SimpleAchievementFileParser
 {
-    public class AchievementsStructureFileParser
+    public class AchievementsStructureFileParser(string fileName)
     {
-        public ISet<string> DlcNames { get; private set; }
-        private readonly string _fileName;
-
-        public AchievementsStructureFileParser(string fileName)
-        {
-            _fileName = fileName;
-            DlcNames = new HashSet<string>();
-        }
+        public ISet<string> DlcNames { get; private set; } = new HashSet<string>();
+        private readonly string _fileName = fileName;
 
         public IList<Achievement> ParseFile()
         {
-            string line;
-            
+            string? line;
             var fileStream = new FileStream(_fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var reader = new StreamReader(fileStream);
-            Achievement? currentAchievement = null;
             Queue<KeyValuePair<string, string>> queue = new Queue<KeyValuePair<string, string>>();
+
             while ((line = reader.ReadLine()) != null)
             {
                 var splitedLine = line.Split('=');
@@ -94,59 +87,59 @@ namespace SimpleAchievementFileParser
                 }
                 else if (token.Key == Constants.TokenId)
                 {
-                    currentObject.Add(Constants.TokenId, token.Value);
+                    currentObject?.Add(Constants.TokenId, token.Value);
                 }
                 else if (token.Key == Constants.TokenLocalization)
                 {
-                    currentObject.Add(Constants.TokenLocalization, token.Value);
+                    currentObject?.Add(Constants.TokenLocalization, token.Value);
                 }
                 else if (token.Key == Constants.TokenPossible)
                 {
-                    parentObject = currentObject.GetParent() ?? currentObject;
+                    parentObject = currentObject?.GetParent() ?? currentObject;
                     currentObject = new Possible(currentObject);
-                    parentObject.Add(currentObject);
+                    parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
                 else if (token.Key == Constants.TokenHappened)
                 {
-                    parentObject = currentObject.GetParent() ?? currentObject;
+                    parentObject = currentObject?.GetParent() ?? currentObject;
                     currentObject = new Happened(currentObject);
-                    parentObject.Add(currentObject);
+                    parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
                 else if (token.Key == Constants.TokenVisible)
                 {
-                    parentObject = currentObject.GetParent() ?? currentObject;
+                    parentObject = currentObject?.GetParent() ?? currentObject;
                     currentObject = new VisibleRequirements(currentObject);
-                    parentObject.Add(currentObject);
+                    parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
                 else if (token.Key == Constants.TokenCustomTriggerTooltip)
                 {
                     parentObject = currentObject;
                     currentObject = new CustomTriggerTooltip(currentObject);
-                    parentObject.Add(currentObject);
+                    parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
                 else if (token.Key == Constants.TokenNot)
                 {
                     parentObject = currentObject;
                     currentObject = new NotModel(currentObject);
-                    parentObject.Add(currentObject);
+                    parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
                 else if (token.Key == Constants.TokenOr)
                 {
                     parentObject = currentObject;
                     currentObject = new OrModel(currentObject);
-                    parentObject.Add(currentObject);
+                    parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
                 else if (token.Value == "{")
                 {
-                    parentObject = currentObject.GetParent() ?? parentObject;
-                    currentObject = new UnspecifiedNode(token.Key, currentObject.GetParent());
-                    parentObject.Add(currentObject);
+                    parentObject = currentObject?.GetParent() ?? parentObject;
+                    currentObject = new UnspecifiedNode(token.Key, currentObject?.GetParent());
+                    parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
                 else if (token.Key == "{" && (simpleNodes.Count == 0 || simpleNodes.Count > 0 && simpleNodes.Peek().Key != "{")) simpleNodes.Push(new KeyValuePair<string, string>("{", ""));
@@ -162,10 +155,10 @@ namespace SimpleAchievementFileParser
                             break;
                         }
                         var keyValuePair = simpleNodes.Pop();
-                        node.Add(keyValuePair.Key, keyValuePair.Value);
+                        node?.Add(keyValuePair.Key, keyValuePair.Value);
                     }
                     if (nodes.Count == 0)
-                        currentObject.Add(node);
+                        currentObject?.Add(node);
                     currentObject = parentObject;
                 }
                 else if (simpleNodes.Count == 0 || simpleNodes.Count > 0 && token.Key != "{") simpleNodes.Push(token);

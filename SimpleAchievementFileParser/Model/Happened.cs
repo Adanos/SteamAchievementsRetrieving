@@ -10,7 +10,7 @@
             Parent = parent;
         }
 
-        public INodeAddAble GetParent()
+        public INodeAddAble? GetParent()
         {
             return Parent;
         }
@@ -24,7 +24,7 @@
         {
         }
 
-        void INodeAddAble.Add(INodeAddAble node)
+        void INodeAddAble.Add(INodeAddAble? node)
         {
             CustomTriggerTooltip = node as CustomTriggerTooltip;
         }

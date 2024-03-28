@@ -15,16 +15,16 @@
         {
             Parent = parent;
         }
-        public INodeAddAble GetParent()
+        public INodeAddAble? GetParent()
         {
             return Parent;
         }
 
         public void Add(string token, string value)
         {
-            if (token == "id")
+            if (token == Constants.TokenId)
                 Id = int.Parse(value);
-            else if (token == "localization")
+            else if (token == Constants.TokenLocalization)
                 Localization = value;
         }
 
@@ -33,7 +33,7 @@
             Parent = node;
         }
 
-        void INodeAddAble.Add(INodeAddAble node)
+        void INodeAddAble.Add(INodeAddAble? node)
         {
             if (node is Possible)
                 Possible = node as Possible;

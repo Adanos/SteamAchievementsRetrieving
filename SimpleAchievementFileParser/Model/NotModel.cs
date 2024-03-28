@@ -10,7 +10,7 @@
             Parent = parent;
         }
 
-        public INodeAddAble GetParent()
+        public INodeAddAble? GetParent()
         {
             return Parent;
         }
@@ -26,9 +26,8 @@
                 NumOfCustomNations = value;
         }
 
-        void INodeAddAble.Add(INodeAddAble node)
+        void INodeAddAble.Add(INodeAddAble? node)
         {
-            //throw new NotImplementedException();
         }
     }
 }
