@@ -42,13 +42,13 @@ namespace SimpleAchievementFileParserTests
         {
             var fileStream = new FileStream("QueueCaseTests\\QueueCaseTest2.txt", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var reader = new StreamReader(fileStream);
-            string line = reader.ReadLine();
+            string? line = string.Empty;
 
             Queue<KeyValuePair<string, string>> queue = new Queue<KeyValuePair<string, string>>();
             while ((line = reader.ReadLine()) != null)
             {
                 string[] values = line.Split(',');
-                queue.Enqueue(new KeyValuePair<string, string>(values[0], values[1] ?? null));
+                queue.Enqueue(new KeyValuePair<string, string>(values[0], values[1]));
             }
 
             SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementTest2.txt");

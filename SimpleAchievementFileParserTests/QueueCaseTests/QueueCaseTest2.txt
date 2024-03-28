@@ -1,4 +1,3 @@
-
 achievement, 
 id,17
 localization,NEW_ACHIEVEMENT_7_2

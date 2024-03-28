@@ -7,7 +7,7 @@
         public IList<INodeAddAble> UnspecifiedNodes { get; private set; } = [];
         private INodeAddAble? Parent = parent;
 
-        public INodeAddAble GetParent()
+        public INodeAddAble? GetParent()
         {
             return Parent;
         }
@@ -17,9 +17,15 @@
             Attributes.Add(token, value);
         }
 
-        public void Add(INodeAddAble node)
+        public void Add(INodeAddAble? node)
         {
-            UnspecifiedNodes.Add(node);
+            if (node != null)
+                UnspecifiedNodes.Add(node);
+        }
+
+        public void SetParent(INodeAddAble node)
+        {
+            Parent = node;
         }
     }
 }

@@ -2,18 +2,13 @@
 
 namespace SimpleAchievementFileParser
 {
-    public class AchievementsDescriptionFileParser
+    public class AchievementsDescriptionFileParser(string fileName)
     {
-        private readonly string _fileName;
-
-        public AchievementsDescriptionFileParser(string fileName)
-        {
-            _fileName = fileName;
-        }
+        private readonly string _fileName = fileName;
 
         public IDictionary<string, AchievementDescription> ParseFile()
         {
-            string line;
+            string? line;
             IDictionary<string, AchievementDescription> achievementsDescriptions = new Dictionary<string, AchievementDescription>();
             var fileStream = new FileStream(_fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var reader = new StreamReader(fileStream);

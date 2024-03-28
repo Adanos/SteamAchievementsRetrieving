@@ -18,15 +18,20 @@
                 HasAllDlc.Add(value);
         }
 
-        void INodeAddAble.Add(INodeAddAble node)
+        void INodeAddAble.Add(INodeAddAble? node)
         {
             if (node is OrModel && HasOneOfDlc == null)
                 HasOneOfDlc = node as OrModel;
         }
 
-        public INodeAddAble GetParent()
+        public INodeAddAble? GetParent()
         {
             return Parent;
+        }
+
+        public void SetParent(INodeAddAble node)
+        {
+            Parent = node;
         }
     }
 }

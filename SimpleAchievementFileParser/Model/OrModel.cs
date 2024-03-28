@@ -10,7 +10,7 @@
             Parent = parent;
         }
 
-        public INodeAddAble GetParent()
+        public INodeAddAble? GetParent()
         {
             return Parent;
         }
@@ -25,9 +25,8 @@
             Names.Add(new KeyValuePair<string, string>(token, value));
         }
 
-        void INodeAddAble.Add(INodeAddAble node)
+        void INodeAddAble.Add(INodeAddAble? node)
         {
-            //throw new NotImplementedException();
         }
     }
 }
