@@ -7,6 +7,8 @@ namespace SteamAchievementsRetrieving.IO
 {
     public class ReadFileManager
     {
+        public string[] DlcNames { get; private set; }
+
         public IList<Achievement> ReadAchievementsFromFile(string fileName)
         {
             string line;
@@ -15,10 +17,10 @@ namespace SteamAchievementsRetrieving.IO
             var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var reader = new StreamReader(fileStream);
             line = reader.ReadLine();
-            var dlcNames = line.Replace(Constants.HeaderOfCsvFile, "").Split(Constants.Separator);
-            for (int i = 0; i < dlcNames.Length; i++)
+            DlcNames = line.Replace(Constants.HeaderOfCsvFile, "").Split(Constants.Separator);
+            for (int i = 0; i < DlcNames.Length; i++)
             {
-                dlcNameDictionary.Add(i, dlcNames[i]);
+                dlcNameDictionary.Add(i, DlcNames[i]);
             }
 
             while ((line = reader.ReadLine()) != null)
@@ -29,7 +31,7 @@ namespace SteamAchievementsRetrieving.IO
                 var indexesOfAnd = Enumerable.Range(0, markedDlc.Count).Where(i => markedDlc[i] == Constants.And);
                 var indexesOfOr = Enumerable.Range(0, markedDlc.Count).Where(i => markedDlc[i] == Constants.Or);
 
-                achievements.Add(new Achievement() { Name = words[0], Description = words[1], Country = words[2], IsRequiredDlc = isRequiredDlc, 
+                achievements.Add(new Achievement() { Name = words[0], Description = words[1], Countries = words[2], IsRequiredDlc = isRequiredDlc, 
                     AllRequiredDlcNames = dlcNameDictionary.Where(x => indexesOfAnd.Contains(x.Key)).Select(x => x.Value).ToList(), 
                     OneRequiredOfDlcNames = dlcNameDictionary.Where(x => indexesOfOr.Contains(x.Key)).Select(x => x.Value).ToList(),
                 });

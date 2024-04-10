@@ -13,11 +13,11 @@ namespace SteamAchievementsRetrieving.IO
         private IList<Achievement> Achievements { get; }
         public ISet<string> DlcNames { get; }
 
-        public SaveFileManager(string filename, ISet<string> _dlcNames, IList<Achievement> achievements)
+        public SaveFileManager(string filename, ISet<string> dlcNames, IList<Achievement> achievements)
         {
             Filename = filename;
             Achievements = achievements;
-            DlcNames = _dlcNames;
+            DlcNames = dlcNames;
         }
 
         private string CreateCsvFile()
@@ -25,7 +25,7 @@ namespace SteamAchievementsRetrieving.IO
             StringBuilder stringBuilder = new StringBuilder(Constants.HeaderOfCsvFile + string.Join(";", DlcNames) + Environment.NewLine);
             foreach (var achievement in Achievements ?? Enumerable.Empty<Achievement>())
             {
-                stringBuilder.Append($"{achievement.Name}{Constants.Separator}{achievement.Description}{Constants.Separator}{achievement.Country}{Constants.Separator}" +
+                stringBuilder.Append($"{achievement.Name}{Constants.Separator}{achievement.Description}{Constants.Separator}{achievement.Countries}{Constants.Separator}" +
                     $"{achievement.IsRequiredDlc}{Constants.Separator}{MarkDlcWithOperator(achievement)}{Environment.NewLine}");
             }
 
