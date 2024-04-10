@@ -1,15 +1,30 @@
 ﻿using NUnit.Framework;
+using SimpleAchievementFileParser.Model;
 
 namespace SimpleAchievementFileParserTests
 {
-    public class AchievementsStructureFileParserTests
+    class AchievementsStructureFileParserTests
     {
+        private Dictionary<string, AchievementDescription> _descriptions = default!;
+
+        [SetUp]
+        public void Setup()
+        {
+            _descriptions = new Dictionary<string, AchievementDescription>()
+            {
+                { "NEW_ACHIEVEMENT_1_2", new AchievementDescription("15") { Name = "test name 1" } },
+                { "NEW_ACHIEVEMENT_7_2", new AchievementDescription("17") { Name = "test name 5" } },
+                { "NEW_ACHIEVEMENT_4_8", new AchievementDescription("26") { Name = "test name 4" } },
+                { "NEW_ACHIEVEMENT_0_1", new AchievementDescription("26") { Name = "test name 01" } }
+            };
+        }
+
         [Test]
         public void AchievementsStructureFileParser_ParseFileWithOnlyCommentary_ReturnObject()
         {
             SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementOnlyCommentaryTest.txt");
 
-            var result = simpleParser.ParseFile();
+            var result = simpleParser.ParseFile(_descriptions);
             Assert.That(result.Count, Is.EqualTo(0));
         }
 
@@ -18,10 +33,10 @@ namespace SimpleAchievementFileParserTests
         {
             SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementTest.txt");
 
-            var result = simpleParser.ParseFile();
+            var result = simpleParser.ParseFile(_descriptions);
             Assert.That(result.Count, Is.EqualTo(1));
             Assert.That(result.FirstOrDefault()?.Id, Is.EqualTo(15));
-            Assert.That(result.FirstOrDefault()?.Localization, Is.EqualTo("NEW_ACHIEVEMENT_1_2"));
+            Assert.That(result.FirstOrDefault()?.Name, Is.EqualTo("test name 1"));
         }
 
         [Test]
@@ -29,10 +44,10 @@ namespace SimpleAchievementFileParserTests
         {
             SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementTest2.txt");
 
-            var result = simpleParser.ParseFile();
+            var result = simpleParser.ParseFile(_descriptions);
             Assert.That(result.Count, Is.EqualTo(1));
             Assert.That(result.FirstOrDefault()?.Id, Is.EqualTo(17));
-            Assert.That(result.FirstOrDefault()?.Localization, Is.EqualTo("NEW_ACHIEVEMENT_7_2"));
+            Assert.That(result.FirstOrDefault()?.Name, Is.EqualTo("test name 5"));
             Assert.That(result.FirstOrDefault()?.Possible?.NormalProvinceValues, Is.EqualTo("yes"));
             Assert.That(result.FirstOrDefault()?.Possible?.NormalOrHistoricalNations, Is.EqualTo("yes"));
         }
@@ -55,7 +70,7 @@ namespace SimpleAchievementFileParserTests
 
             var result = simpleParser.CreateAchievements(queue);
             Assert.That(result.FirstOrDefault()?.Id, Is.EqualTo(17));
-            Assert.That(result.FirstOrDefault()?.Localization, Is.EqualTo("NEW_ACHIEVEMENT_7_2"));
+            Assert.That(result.FirstOrDefault()?.Name, Is.EqualTo("test name 5"));
             Assert.That(result.FirstOrDefault()?.Possible?.NotModel, Is.Not.Null);
             Assert.That(result.FirstOrDefault()?.Possible?.HasOneOfDlc, Is.Not.Null);
             Assert.That(result.FirstOrDefault()?.Possible?.HasOneOfDlc?.Names.Count, Is.EqualTo(2));
@@ -66,10 +81,10 @@ namespace SimpleAchievementFileParserTests
         {
             SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementTwoOrsInVisibleTest.txt");
 
-            var result = simpleParser.ParseFile();
+            var result = simpleParser.ParseFile(_descriptions);
             Assert.That(result.Count, Is.EqualTo(1));
             Assert.That(result.FirstOrDefault()?.Id, Is.EqualTo(26));
-            Assert.That(result.FirstOrDefault()?.Localization, Is.EqualTo("NEW_ACHIEVEMENT_4_8"));
+            Assert.That(result.FirstOrDefault()?.Name, Is.EqualTo("test name 4"));
             Assert.That(result.FirstOrDefault()?.VisibleRequirements?.HasOneOfDlc, Is.Not.Null);
             var dlcNames = result.FirstOrDefault()?.VisibleRequirements?.HasOneOfDlc?.Names;
             Assert.That(dlcNames?.Count, Is.EqualTo(2));
@@ -82,10 +97,10 @@ namespace SimpleAchievementFileParserTests
         {
             SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementWithProvinceIdTest.txt");
 
-            var result = simpleParser.ParseFile();
+            var result = simpleParser.ParseFile(_descriptions);
             Assert.That(result.Count, Is.EqualTo(1));
             Assert.That(result.FirstOrDefault()?.Id, Is.EqualTo(5));
-            Assert.That(result.FirstOrDefault()?.Localization, Is.EqualTo("NEW_ACHIEVEMENT_0_1"));
+            Assert.That(result.FirstOrDefault()?.Name, Is.EqualTo("test name 01"));
             Assert.That(result.FirstOrDefault()?.UnspecifiedNodes?.Count, Is.EqualTo(1));
             Assert.That(result.FirstOrDefault()?.UnspecifiedNodes?.FirstOrDefault()?.NodeName, Is.EqualTo("provinces_to_highlight"));
         }
@@ -95,10 +110,10 @@ namespace SimpleAchievementFileParserTests
         {
             SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\twoAchievementsTest.txt");
 
-            var result = simpleParser.ParseFile();
+            var result = simpleParser.ParseFile(_descriptions);
             Assert.That(result.Count, Is.EqualTo(2));
             Assert.That(result.ElementAt(0).Id, Is.EqualTo(17));
-            Assert.That(result.ElementAt(0).Localization, Is.EqualTo("NEW_ACHIEVEMENT_7_2"));
+            Assert.That(result.ElementAt(0).Name, Is.EqualTo("test name 5"));
             Assert.That(result.ElementAt(0).Possible?.NormalProvinceValues, Is.EqualTo("yes"));
             Assert.That(result.ElementAt(0).Possible?.NormalOrHistoricalNations, Is.EqualTo("yes"));
             var dlcNames = result.FirstOrDefault()?.Possible?.HasOneOfDlc?.Names;
@@ -106,7 +121,7 @@ namespace SimpleAchievementFileParserTests
             Assert.That(dlcNames?.FirstOrDefault(x => x.Key == "has_dlc").Value, Is.EqualTo("Dlc 2"));
             Assert.That(dlcNames?.LastOrDefault(x => x.Key == "has_dlc").Value, Is.EqualTo("Dlc 1"));
             Assert.That(result.ElementAt(1).Id, Is.EqualTo(26));
-            Assert.That(result.ElementAt(1).Localization, Is.EqualTo("NEW_ACHIEVEMENT_4_8"));
+            Assert.That(result.ElementAt(1).Name, Is.EqualTo("test name 4"));
             var dlcNames2 = result.LastOrDefault()?.VisibleRequirements?.HasOneOfDlc?.Names;
             Assert.That(dlcNames2?.Count, Is.EqualTo(2));
             Assert.That(dlcNames2?.FirstOrDefault(x => x.Key == "has_dlc").Value, Is.EqualTo("Dlc4"));

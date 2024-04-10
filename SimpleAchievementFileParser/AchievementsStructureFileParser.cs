@@ -7,7 +7,7 @@ namespace SimpleAchievementFileParser
         public ISet<string> DlcNames { get; private set; } = new HashSet<string>();
         private readonly string _fileName = fileName;
 
-        public IList<Achievement> ParseFile()
+        public IList<Achievement> ParseFile(IDictionary<string, AchievementDescription> descriptions)
         {
             string? line;
             var fileStream = new FileStream(_fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
@@ -28,7 +28,8 @@ namespace SimpleAchievementFileParser
                 }
                 else if (line.Contains(Constants.TokenLocalization))
                 {
-                    queue.Enqueue(new KeyValuePair<string, string>(Constants.TokenLocalization, line.Split('=')[1].TrimStart().TrimEnd()));
+                    descriptions.TryGetValue(line.Split('=')[1].TrimStart().TrimEnd(), out var value);
+                    queue.Enqueue(new KeyValuePair<string, string>(Constants.TokenLocalization, value?.Name ?? string.Empty));
                 }
                 else if (line.Contains(Constants.TokenHasDlc))
                 {
@@ -73,7 +74,7 @@ namespace SimpleAchievementFileParser
             INodeAddAble? node = null;
             Stack<INodeAddAble> nodes = new();
             Stack<KeyValuePair<string, string>> simpleNodes = new Stack<KeyValuePair<string, string>>();
-            IList<Achievement> achievements = new List<Achievement>();
+            IList<Achievement> achievements = [];
 
             while (queue.Count > 0)
             {

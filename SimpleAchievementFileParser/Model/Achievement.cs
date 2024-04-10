@@ -3,7 +3,7 @@
     public class Achievement : INodeAddAble
     {
         public int Id { get; private set; }
-        public string Localization { get; private set; }
+        public string Name { get; private set; }
         public Possible? Possible { get; private set; }
         public Happened? Happened { get; private set; }
         public VisibleRequirements? VisibleRequirements { get; private set; }
@@ -25,7 +25,7 @@
             if (token == Constants.TokenId)
                 Id = int.Parse(value);
             else if (token == Constants.TokenLocalization)
-                Localization = value;
+                Name = value;
         }
 
         public void SetParent(INodeAddAble node)
