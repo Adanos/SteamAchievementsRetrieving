@@ -12,6 +12,8 @@
             CsvExtension = ".csv",
             Achievements = "Achievements ",
             UnlockedAchievements = "UnlockedAchievements ",
-            LockedAchievements = "LockedAchievements ";
+            LockedAchievements = "LockedAchievements ",
+            And = "AND",
+            Or = "OR";
     }
 }
