@@ -20,6 +20,8 @@ namespace SteamAchievementsRetrieving
             {
                 AchievementMatrixCreator achievementMatrixCreator = new AchievementMatrixCreator(achievementManager.Achievements);
                 achievementMatrixCreator.CreateMatrix();
+                var updatedAchievements = achievementManager.Achievements;
+                achievementManager.SaveAchievementsToFile("updated", updatedAchievements);
             }     
         }
     }

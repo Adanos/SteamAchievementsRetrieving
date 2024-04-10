@@ -48,7 +48,7 @@ namespace SteamAchievementsRetrieving.Managers
                     AchievementsResponse = results.PlayerStats.Achievements;
                     FilterAchievements();
                     MapAchievements();
-                    SaveAchievementsToFile(results.PlayerStats.GameName, _dlcNames);
+                    SaveAchievementsToFile(results.PlayerStats.GameName);
                 }
                 else 
                 {
@@ -98,12 +98,20 @@ namespace SteamAchievementsRetrieving.Managers
         private IList<Achievement> ReadAchievementsFromFile(string[] files)
         {
             ReadFileManager readFileManager = new ReadFileManager();
-            return readFileManager.ReadAchievementsFromFile(files[0]);
+            var achievements = readFileManager.ReadAchievementsFromFile(files[0]);
+            _dlcNames = readFileManager.DlcNames.ToHashSet();
+            return achievements;
         }
 
-        private void SaveAchievementsToFile(string gameName, ISet<string> _dlcNames)
+        private void SaveAchievementsToFile(string gameName)
         {
             SaveFileManager saveFileManager = new SaveFileManager(_filenameCreator.CreateFullPath(gameName), _dlcNames, Achievements);
+            saveFileManager.SaveCsvFile();
+        }
+
+        public void SaveAchievementsToFile(string gameName, IList<Achievement> achievements)
+        {
+            SaveFileManager saveFileManager = new SaveFileManager(_filenameCreator.CreateFullPath(gameName), _dlcNames, achievements);
             saveFileManager.SaveCsvFile();
         }
     }
