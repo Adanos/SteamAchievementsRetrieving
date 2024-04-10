@@ -7,6 +7,7 @@ namespace SteamAchievementsRetrieving.Models
     {
         public string Country { get; set; }
         public bool IsRequiredDlc { get; set; }
-        public IList<string> DlcNames { get; set; } = [];
+        public IList<string> AllRequiredDlcNames { get; set; } = [];
+        public IList<string> OneRequiredOfDlcNames { get; set; } = [];
     }
 }
