@@ -1,6 +1,6 @@
 achievement, 
 id,17
-localization,NEW_ACHIEVEMENT_7_2
+localization,test name 5
 possible,{}
 {, 
 NOT, 

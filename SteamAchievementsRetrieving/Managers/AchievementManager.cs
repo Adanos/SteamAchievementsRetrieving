@@ -18,6 +18,8 @@ namespace SteamAchievementsRetrieving.Managers
         private readonly EuropaUniversalisFilesStructureConfiguration _europaUniversalisFilesStructureConfiguration;
         private readonly FilenameCreator _filenameCreator;
         private IList<AchievementResponse> AchievementsResponse { get; set; }
+        private ISet<string> _dlcNames;
+
         public IList<Achievement> Achievements { get; private set; }
 
         public AchievementManager(IConfiguration configuration)
@@ -46,7 +48,7 @@ namespace SteamAchievementsRetrieving.Managers
                     AchievementsResponse = results.PlayerStats.Achievements;
                     FilterAchievements();
                     MapAchievements();
-                    SaveAchievementsToFile(results.PlayerStats.GameName);
+                    SaveAchievementsToFile(results.PlayerStats.GameName, _dlcNames);
                 }
                 else 
                 {
@@ -61,18 +63,21 @@ namespace SteamAchievementsRetrieving.Managers
             AchievementsDescriptionFileParser achievementsDescriptionFileParser = new(gameDirectory + _europaUniversalisFilesStructureConfiguration.AchievementsLocalisationPath);
             AchievementsStructureFileParser achievementsStructureFileParser = new(gameDirectory + _europaUniversalisFilesStructureConfiguration.AchievementsRequirementsPath);
             var descriptions = achievementsDescriptionFileParser.ParseFile();
-            var requirements = achievementsStructureFileParser.ParseFile();
+            var requirements = achievementsStructureFileParser.ParseFile(descriptions);
+            _dlcNames = achievementsStructureFileParser.DlcNames;
 
             Achievements = [];
             foreach (var achievement in AchievementsResponse)
             {
-                //requirements.FirstOrDefault(x => x.);
-                //descriptions.ContainsKey(achievement.Name);
+                var requiredDlcs = requirements.FirstOrDefault(x => x.Name == achievement.Name)
+                    ?.VisibleRequirements?.HasAllDlc;
                 Achievements.Add(new Achievement()
                 {
                     Achieved = achievement.Achieved,
                     Description = achievement.Description,
-                    Name = achievement.Name
+                    Name = achievement.Name,
+                    IsRequiredDlc = requiredDlcs?.Any() ?? false,
+                    DlcNames = requiredDlcs
                 });
             }
         }
@@ -93,9 +98,9 @@ namespace SteamAchievementsRetrieving.Managers
             return readFileManager.ReadAchievementsFromFile(files[0]);
         }
 
-        private void SaveAchievementsToFile(string gameName)
+        private void SaveAchievementsToFile(string gameName, ISet<string> _dlcNames)
         {
-            SaveFileManager saveFileManager = new SaveFileManager(_filenameCreator.CreateFullPath(gameName), Achievements);
+            SaveFileManager saveFileManager = new SaveFileManager(_filenameCreator.CreateFullPath(gameName), _dlcNames, Achievements);
             saveFileManager.SaveCsvFile();
         }
     }

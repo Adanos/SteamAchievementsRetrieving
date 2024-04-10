@@ -14,7 +14,9 @@
 
         public void Add(string token, string value)
         {
-            Attributes.Add(token, value);
+            if (!Attributes.ContainsKey(token))
+                Attributes.Add(token, value);
+            else Attributes[token] += ", " + value;
         }
 
         public void Add(INodeAddAble? node)
