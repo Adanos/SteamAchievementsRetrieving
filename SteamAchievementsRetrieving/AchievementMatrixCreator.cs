@@ -26,7 +26,7 @@ namespace SteamAchievementsRetrieving
 
             foreach (var achievement in Achievements)
             {
-                var countries = matchingManager.FindCountryMatching(achievement.Description)?.Split(",").Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim());
+                var countries = matchingManager.FindCountryMatching(achievement.Description)?.Split(Constants.CountriesSeparator).Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim());
                 var additionalCountry = matchingManager.FindPhrasesReferringToCountry(achievement.Description);
                 
                 foreach (var country in countries ?? Enumerable.Empty<string>())
@@ -50,7 +50,7 @@ namespace SteamAchievementsRetrieving
             if (exists)
                 value.Add(achievement.Name);
             else Matrix.Add(country, [achievement.Name]);
-            achievement.Countries += $"{country},";
+            achievement.Countries.Add(country);
         }
 
         private void MergeTheSameKeys()

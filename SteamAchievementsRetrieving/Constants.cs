@@ -9,6 +9,7 @@
             LanguageParam = "l",
             HeaderOfCsvFile = "Achievement;Description;Country;Is dlc required?;",
             Separator = ";",
+            CountriesSeparator = ",",
             CsvExtension = ".csv",
             Achievements = "Achievements ",
             UnlockedAchievements = "UnlockedAchievements ",
