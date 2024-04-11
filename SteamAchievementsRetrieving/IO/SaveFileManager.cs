@@ -25,7 +25,7 @@ namespace SteamAchievementsRetrieving.IO
             StringBuilder stringBuilder = new StringBuilder(Constants.HeaderOfCsvFile + string.Join(";", DlcNames) + Environment.NewLine);
             foreach (var achievement in Achievements ?? Enumerable.Empty<Achievement>())
             {
-                stringBuilder.Append($"{achievement.Name}{Constants.Separator}{achievement.Description}{Constants.Separator}{achievement.Countries}{Constants.Separator}" +
+                stringBuilder.Append($"{achievement.Name}{Constants.Separator}{achievement.Description}{Constants.Separator}{string.Join(Constants.CountriesSeparator, achievement.Countries)}{Constants.Separator}" +
                     $"{achievement.IsRequiredDlc}{Constants.Separator}{MarkDlcWithOperator(achievement)}{Environment.NewLine}");
             }
 

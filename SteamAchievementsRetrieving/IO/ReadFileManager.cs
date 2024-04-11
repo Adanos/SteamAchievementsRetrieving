@@ -31,7 +31,7 @@ namespace SteamAchievementsRetrieving.IO
                 var indexesOfAnd = Enumerable.Range(0, markedDlc.Count).Where(i => markedDlc[i] == Constants.And);
                 var indexesOfOr = Enumerable.Range(0, markedDlc.Count).Where(i => markedDlc[i] == Constants.Or);
 
-                achievements.Add(new Achievement() { Name = words[0], Description = words[1], Countries = words[2], IsRequiredDlc = isRequiredDlc, 
+                achievements.Add(new Achievement() { Name = words[0], Description = words[1], Countries = words[2].Split(Constants.CountriesSeparator).ToHashSet(), IsRequiredDlc = isRequiredDlc, 
                     AllRequiredDlcNames = dlcNameDictionary.Where(x => indexesOfAnd.Contains(x.Key)).Select(x => x.Value).ToList(), 
                     OneRequiredOfDlcNames = dlcNameDictionary.Where(x => indexesOfOr.Contains(x.Key)).Select(x => x.Value).ToList(),
                 });

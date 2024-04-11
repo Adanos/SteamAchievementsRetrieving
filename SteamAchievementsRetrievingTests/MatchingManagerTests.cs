@@ -25,6 +25,10 @@ namespace SteamAchievementsRetrievingTests
         [TestCase("As Perm, own or have a subject own the Russian, Siberian and Cascadian Regions.", "Perm")]
         [TestCase("Form Bavaria starting as München and win with Dortmund and Berlin.", "München")]
         [TestCase("As Asturias, drink a rum.", "Asturias")]
+        [TestCase("Starting as either Russia or France, own Rome.", "Russia, France")]
+        [TestCase("Starting as either the Livonian Order or the Teutonic Order, own Rome.", "the Livonian Order, the Teutonic Order")]
+        [TestCase("Starting as either the Livonian Order or the Emperor, own Rome.", "the Livonian Order")]
+        [TestCase("As the Papacy, the Livonian Order, the Emperor or the Knights own Jerusalem.", "the Papacy, the Livonian Order, the Knights")]
         public void FindMatching_ExistSubstring_ReturnState(string text, string expectedValue)
         {
             MatchingManager matchingManager = new MatchingManager();
