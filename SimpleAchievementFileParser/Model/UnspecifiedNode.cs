@@ -5,7 +5,7 @@
         public string NodeName { get; private set; } = nodeName;
         public IDictionary<string, string> Attributes = new Dictionary<string, string>();
         public IList<INodeAddAble> UnspecifiedNodes { get; private set; } = [];
-        private INodeAddAble? Parent = parent;
+        private readonly INodeAddAble? Parent = parent;
 
         public INodeAddAble? GetParent()
         {
@@ -23,11 +23,6 @@
         {
             if (node != null)
                 UnspecifiedNodes.Add(node);
-        }
-
-        public void SetParent(INodeAddAble node)
-        {
-            Parent = node;
         }
     }
 }

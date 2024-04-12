@@ -15,20 +15,33 @@ namespace SteamAchievementsRetrieving
             { "Persian mission tree", "Persia" },
         };
 
+        private readonly IDictionary<string, string> Replacements = new Dictionary<string, string>
+        {
+            { "as ", "" },
+            { "As ", "" },
+            { " or", "," },
+            { "either ", "" },
+            { ", the Emperor", "" },
+            { " the Emperor", "" },
+            { ", Emperor", "" },
+            { " Emperor", "" }
+        };
+
         public string FindCountryMatching(string text)
         {
-            string countryPattern = @"((\bas\b)|(\bAs\b))\s(\beither\b\s)?(\bthe\b\s)?([A-Z][a-zà-ü]*]*\s?)*((,(\s\bthe\b)?(\s[A-Z][a-zà-ü]*]*)*)*\s?\bor\b(\s(\bthe\b\s)?[A-Z][a-zà-ü]*]*)*)*";
+            string letterPattern = "[A-Z][a-zà-ü]*";
+            string countryPattern = @$"(\b[aA]s\b)\s(\beither\b\s)?(\bthe\b\s)?({letterPattern}\s?)*((,(\s\bthe\b)?(\s{letterPattern})*)*\s?\bor\b(\s(\bthe\b\s)?{letterPattern})*)*";
             string result = null;
             Match match = Regex.Match(text, countryPattern);
 
             if (match.Success)
             {
                 result = match.Captures[0].Value;
-                result = result?.Replace("as ", "")?.Replace("As ", "")?.Replace(" or", ",")?.Replace("either ", "")?.Replace(", the Emperor", "")?.Replace(" the Emperor", "")
-                    ?.Replace(", Emperor", "")?.Replace(" Emperor", "")?.Trim();
+                foreach (var replacement in Replacements)
+                    result = Regex.Replace(result, replacement.Key, replacement.Value);
             }
 
-            return result;
+            return result?.Trim();
         }
 
         public string FindPhrasesReferringToCountry(string text)

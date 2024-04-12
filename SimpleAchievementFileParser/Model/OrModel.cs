@@ -1,23 +1,13 @@
 ﻿namespace SimpleAchievementFileParser.Model
 {
-    public class OrModel : INodeAddAble
+    public class OrModel(INodeAddAble? parent) : INodeAddAble
     {
         public List<KeyValuePair<string, string>> Names { get; set; } = [];
-        private INodeAddAble? Parent;
-
-        public OrModel(INodeAddAble? parent)
-        {
-            Parent = parent;
-        }
+        private readonly INodeAddAble? Parent = parent;
 
         public INodeAddAble? GetParent()
         {
             return Parent;
-        }
-
-        public void SetParent(INodeAddAble node)
-        {
-            Parent = node;
         }
 
         public void Add(string token, string value)
