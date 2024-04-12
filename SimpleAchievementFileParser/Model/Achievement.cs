@@ -28,11 +28,6 @@
                 Name = value;
         }
 
-        public void SetParent(INodeAddAble node)
-        {
-            Parent = node;
-        }
-
         void INodeAddAble.Add(INodeAddAble? node)
         {
             if (node is Possible)

@@ -5,6 +5,5 @@
         void Add(string token, string value);
         void Add(INodeAddAble? node);
         INodeAddAble? GetParent();
-        void SetParent(INodeAddAble node);
     }
 }

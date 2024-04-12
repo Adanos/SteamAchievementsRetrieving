@@ -1,16 +1,11 @@
 ﻿namespace SimpleAchievementFileParser.Model
 {
-    public class VisibleRequirements : INodeAddAble
+    public class VisibleRequirements(INodeAddAble? parent) : INodeAddAble
     {
         public IList<string> HasAllDlc { get; set; } = [];
 
         public OrModel? HasOneOfDlc { get; set; } //OR
-        private INodeAddAble? Parent = null;
-
-        public VisibleRequirements(INodeAddAble? parent)
-        {
-            Parent = parent;
-        }
+        private readonly INodeAddAble? Parent = parent;
 
         public void Add(string token, string value)
         {
@@ -27,11 +22,6 @@
         public INodeAddAble? GetParent()
         {
             return Parent;
-        }
-
-        public void SetParent(INodeAddAble node)
-        {
-            Parent = node;
         }
     }
 }

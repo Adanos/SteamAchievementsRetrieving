@@ -9,7 +9,7 @@
         public OrModel? HasOneOfDlc { get; set; } //OR
 
         public IList<UnspecifiedNode>? UnspecifiedNodes { get; private set; }
-        private INodeAddAble? Parent;
+        private readonly INodeAddAble? Parent;
 
         public Possible(INodeAddAble? parent)
         {
@@ -21,16 +21,11 @@
             return Parent;
         }
 
-        public void SetParent(INodeAddAble node)
-        {
-            Parent = node;
-        }
-
         public void Add(string token, string value)
         {
-            if (token == "normal_or_historical_nations")
+            if (token == Constants.TokenNormalOrHistoricalNations)
                 NormalOrHistoricalNations = value;
-            if (token == "normal_province_values")
+            if (token == Constants.TokenNormalProvinceValues)
                 NormalProvinceValues = value;
         }
 

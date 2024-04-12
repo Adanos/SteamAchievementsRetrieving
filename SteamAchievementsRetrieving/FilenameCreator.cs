@@ -2,14 +2,9 @@
 
 namespace SteamAchievementsRetrieving
 {
-    class FilenameCreator
+    class FilenameCreator(SteamAchievementConfiguration steamAchievementConfiguration)
     {
-        private readonly SteamAchievementConfiguration SteamAchievementConfiguration;
-
-        public FilenameCreator(SteamAchievementConfiguration steamAchievementConfiguration)
-        {
-            SteamAchievementConfiguration = steamAchievementConfiguration;
-        }
+        private readonly SteamAchievementConfiguration SteamAchievementConfiguration = steamAchievementConfiguration;
 
         public string CreateFilename(string gameName, string extension = Constants.CsvExtension)
         {

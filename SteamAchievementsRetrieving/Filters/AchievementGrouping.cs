@@ -4,14 +4,9 @@ using System.Linq;
 
 namespace SteamAchievementsRetrieving.Services
 {
-    public class AchievementGrouping
+    public class AchievementGrouping(IList<AchievementResponse> achievements)
     {
-        private IList<AchievementResponse> Achievements { get; }
-
-        public AchievementGrouping(IList<AchievementResponse> achievements)
-        {
-            Achievements = achievements;
-        }
+        private IList<AchievementResponse> Achievements { get; } = achievements;
 
         public IList<AchievementResponse> GetUnlockedAchievements()
         {
