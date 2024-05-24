@@ -71,16 +71,16 @@ namespace SteamAchievementsRetrieving.Managers
             {
                 var requiredDlcs = requirements.FirstOrDefault(x => x.Name == achievement.Name)
                     ?.VisibleRequirements?.HasAllDlc;
-                var one = requirements.FirstOrDefault(x => x.Name == achievement.Name)
-                    ?.VisibleRequirements?.HasOneOfDlc?.Names;
+                var oneOfDlcRequired = requirements.FirstOrDefault(x => x.Name == achievement.Name)
+                    ?.VisibleRequirements?.HasOneOfDlc?.SelectMany(x => x.Names);
                 Achievements.Add(new Achievement()
                 {
                     Achieved = achievement.Achieved,
                     Description = achievement.Description,
                     Name = achievement.Name,
-                    IsRequiredDlc = (requiredDlcs?.Any() ?? false) || (one?.Any(x => x.Key == SimpleAchievementFileParser.Constants.TokenHasDlc) ?? false),
+                    IsRequiredDlc = (requiredDlcs?.Any() ?? false) || (oneOfDlcRequired?.Any(x => x.Key == SimpleAchievementFileParser.Constants.TokenHasDlc) ?? false),
                     AllRequiredDlcNames = requiredDlcs,
-                    OneRequiredOfDlcNames = one?.Where(x => x.Key == SimpleAchievementFileParser.Constants.TokenHasDlc)?.Select(x => x.Value)?.ToList()
+                    OneRequiredOfDlcNames = oneOfDlcRequired?.Where(x => x.Key == SimpleAchievementFileParser.Constants.TokenHasDlc)?.Select(x => x.Value)?.ToList()
                 });
             }
         }

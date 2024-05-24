@@ -1,0 +1,63 @@
+# achievement with many or tags
+achievement_withmanyOrTags = {
+	id = 796
+	localization = NEW_ACHIEVEMENT_11
+	
+	visible = {
+		OR = {
+			tag = HAB
+			tag = AUH
+		}
+		OR = {
+			has_dlc = "Dlc6"
+			has_dlc = "Dlc5"
+		}
+	}
+	
+	possible = {
+		normal_or_historical_nations = yes
+		normal_province_values = yes
+		ironman = yes
+		start_date = 1444.11.11
+		NOT = { num_of_custom_nations = 1 }
+		is_random_new_world = no
+	}
+	happened = {
+		custom_trigger_tooltip = {
+			tooltip = completed_austrian_missions
+			OR = {
+				AND = {
+					has_dlc = "Dlc6"
+					NOT = { has_dlc = "Dlc5" }
+					mission_completed = union_with_spain
+				}
+				AND = {
+					has_dlc = "Dlc5"
+					OR = {
+						AND = {
+							mission_completed = random_mission_01
+							mission_completed = random_mission_02
+						}
+						AND = {
+							mission_completed = random_mission_03
+						}
+					}
+					mission_completed = random_mission_10
+					OR = {
+						AND = {
+							mission_completed = random_mission_04
+							mission_completed = random_mission_05
+						}
+					}
+					mission_completed = random_mission_08
+					OR = {
+						AND = {
+							mission_completed = random_mission_06
+						}
+					}
+					mission_completed = random_mission_07
+				}
+			}
+		}
+	}
+}
