@@ -3,6 +3,8 @@
     public class NotModel : INodeAddAble
     {
         public string NumOfCustomNations { get; set; } //num_of_custom_nations
+        public List<KeyValuePair<string, string>> Names { get; set; } = [];
+        public List<INodeAddAble?> Nodes { get; set; } = [];
         private readonly INodeAddAble? Parent;
 
         public NotModel(INodeAddAble? parent)
@@ -19,10 +21,12 @@
         {
             if (token == "num_of_custom_nations")
                 NumOfCustomNations = value;
+            else Names.Add(new KeyValuePair<string, string>(token, value));
         }
 
         void INodeAddAble.Add(INodeAddAble? node)
         {
+            Nodes.Add(node);
         }
     }
 }

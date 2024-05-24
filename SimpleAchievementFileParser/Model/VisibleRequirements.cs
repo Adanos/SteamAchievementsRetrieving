@@ -4,7 +4,7 @@
     {
         public IList<string> HasAllDlc { get; set; } = [];
 
-        public OrModel? HasOneOfDlc { get; set; } //OR
+        public List<OrModel> HasOneOfDlc { get; set; } = []; //OR
         private readonly INodeAddAble? Parent = parent;
 
         public void Add(string token, string value)
@@ -15,8 +15,8 @@
 
         void INodeAddAble.Add(INodeAddAble? node)
         {
-            if (node is OrModel && HasOneOfDlc == null)
-                HasOneOfDlc = node as OrModel;
+            if (node is OrModel)
+                HasOneOfDlc.Add(node as OrModel);
         }
 
         public INodeAddAble? GetParent()

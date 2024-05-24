@@ -26,6 +26,9 @@
     <None Update="FileCaseTests\AchievementsDescription\description03.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="FileCaseTests\AchievementsStructure\achievementWithManyOrTags.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="FileCaseTests\AchievementsStructure\achievementOnlyCommentaryTest.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

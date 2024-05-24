@@ -1,8 +1,11 @@
-﻿namespace SimpleAchievementFileParser.Model
+﻿using System.Xml.Linq;
+
+namespace SimpleAchievementFileParser.Model
 {
     public class OrModel(INodeAddAble? parent) : INodeAddAble
     {
         public List<KeyValuePair<string, string>> Names { get; set; } = [];
+        public List<INodeAddAble?> Nodes { get; set; } = [];
         private readonly INodeAddAble? Parent = parent;
 
         public INodeAddAble? GetParent()
@@ -17,6 +20,7 @@
 
         void INodeAddAble.Add(INodeAddAble? node)
         {
+            Nodes.Add(node);
         }
     }
 }

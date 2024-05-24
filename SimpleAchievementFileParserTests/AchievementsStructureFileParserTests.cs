@@ -15,7 +15,8 @@ namespace SimpleAchievementFileParserTests
                 { "NEW_ACHIEVEMENT_1_2", new AchievementDescription("15") { Name = "test name 1" } },
                 { "NEW_ACHIEVEMENT_7_2", new AchievementDescription("17") { Name = "test name 5" } },
                 { "NEW_ACHIEVEMENT_4_8", new AchievementDescription("26") { Name = "test name 4" } },
-                { "NEW_ACHIEVEMENT_0_1", new AchievementDescription("26") { Name = "test name 01" } }
+                { "NEW_ACHIEVEMENT_0_1", new AchievementDescription("26") { Name = "test name 01" } },
+                { "NEW_ACHIEVEMENT_11", new AchievementDescription("796") { Name = "test name 7" } }
             };
         }
 
@@ -86,7 +87,7 @@ namespace SimpleAchievementFileParserTests
             Assert.That(result.FirstOrDefault()?.Id, Is.EqualTo(26));
             Assert.That(result.FirstOrDefault()?.Name, Is.EqualTo("test name 4"));
             Assert.That(result.FirstOrDefault()?.VisibleRequirements?.HasOneOfDlc, Is.Not.Null);
-            var dlcNames = result.FirstOrDefault()?.VisibleRequirements?.HasOneOfDlc?.Names;
+            var dlcNames = result.FirstOrDefault()?.VisibleRequirements?.HasOneOfDlc?.FirstOrDefault()?.Names;
             Assert.That(dlcNames?.Count, Is.EqualTo(2));
             Assert.That(dlcNames?.FirstOrDefault(x => x.Key == "has_dlc").Value, Is.EqualTo("Dlc4"));
             Assert.That(dlcNames?.LastOrDefault(x => x.Key == "has_dlc").Value, Is.EqualTo("Dlc2"));
@@ -122,10 +123,27 @@ namespace SimpleAchievementFileParserTests
             Assert.That(dlcNames?.LastOrDefault(x => x.Key == "has_dlc").Value, Is.EqualTo("Dlc 1"));
             Assert.That(result.ElementAt(1).Id, Is.EqualTo(26));
             Assert.That(result.ElementAt(1).Name, Is.EqualTo("test name 4"));
-            var dlcNames2 = result.LastOrDefault()?.VisibleRequirements?.HasOneOfDlc?.Names;
+            var dlcNames2 = result.LastOrDefault()?.VisibleRequirements?.HasOneOfDlc?.FirstOrDefault()?.Names;
             Assert.That(dlcNames2?.Count, Is.EqualTo(2));
             Assert.That(dlcNames2?.FirstOrDefault(x => x.Key == "has_dlc").Value, Is.EqualTo("Dlc4"));
             Assert.That(dlcNames2?.LastOrDefault(x => x.Key == "has_dlc").Value, Is.EqualTo("Dlc2"));
+        }
+
+        [Test]
+        public void AchievementsStructureFileParser_ParseFileWithManyOrTags_ReturnObject()
+        {
+            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementWithManyOrTags.txt");
+
+            var result = simpleParser.ParseFile(_descriptions);
+            Assert.That(result.Count, Is.EqualTo(1));
+            Assert.That(result.ElementAt(0).Id, Is.EqualTo(796));
+            Assert.That(result.ElementAt(0).Name, Is.EqualTo("test name 7"));
+            Assert.That(result.ElementAt(0).Possible?.NormalProvinceValues, Is.EqualTo("yes"));
+            Assert.That(result.ElementAt(0).Possible?.NormalOrHistoricalNations, Is.EqualTo("yes"));
+            var dlcNames = result.FirstOrDefault()?.VisibleRequirements?.HasOneOfDlc;
+            Assert.That(dlcNames?.Count, Is.EqualTo(2));
+            Assert.That(dlcNames?.SelectMany(x => x.Names)?.FirstOrDefault(x => x.Key == "has_dlc").Value, Is.EqualTo("Dlc5"));
+            Assert.That(dlcNames?.SelectMany(x => x.Names)?.LastOrDefault(x => x.Key == "has_dlc").Value, Is.EqualTo("Dlc6"));
         }
     }
 }

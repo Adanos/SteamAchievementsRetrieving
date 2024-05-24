@@ -31,7 +31,7 @@ namespace SimpleAchievementFileParser
                     descriptions.TryGetValue(line.Split('=')[1].TrimStart().TrimEnd(), out var value);
                     queue.Enqueue(new KeyValuePair<string, string>(Constants.TokenLocalization, value?.Name ?? string.Empty));
                 }
-                else if (line.Contains(Constants.TokenHasDlc))
+                else if (line.Contains(Constants.TokenHasDlc) && !line.Contains("{"))
                 {
                     string dlcName = line.Split('=')[1].Replace("\"", "").TrimStart().TrimEnd();
                     DlcNames.Add(dlcName);
@@ -97,42 +97,42 @@ namespace SimpleAchievementFileParser
                 else if (token.Key == Constants.TokenPossible)
                 {
                     parentObject = currentObject?.GetParent() ?? currentObject;
-                    currentObject = new Possible(currentObject);
+                    currentObject = new Possible(parentObject);
                     parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
                 else if (token.Key == Constants.TokenHappened)
                 {
                     parentObject = currentObject?.GetParent() ?? currentObject;
-                    currentObject = new Happened(currentObject);
+                    currentObject = new Happened(parentObject);
                     parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
                 else if (token.Key == Constants.TokenVisible)
                 {
                     parentObject = currentObject?.GetParent() ?? currentObject;
-                    currentObject = new VisibleRequirements(currentObject);
+                    currentObject = new VisibleRequirements(parentObject);
                     parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
                 else if (token.Key == Constants.TokenCustomTriggerTooltip)
                 {
                     parentObject = currentObject;
-                    currentObject = new CustomTriggerTooltip(currentObject);
+                    currentObject = new CustomTriggerTooltip(parentObject);
                     parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
                 else if (token.Key == Constants.TokenNot)
                 {
                     parentObject = currentObject;
-                    currentObject = new NotModel(currentObject);
+                    currentObject = new NotModel(parentObject);
                     parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
                 else if (token.Key == Constants.TokenOr)
                 {
                     parentObject = currentObject;
-                    currentObject = new OrModel(currentObject);
+                    currentObject = new OrModel(parentObject);
                     parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
