@@ -6,6 +6,15 @@ namespace SimpleAchievementFileParser
     {
         public ISet<string> DlcNames { get; private set; } = new HashSet<string>();
         private readonly string _fileName = fileName;
+        private readonly IDictionary<string, Func<INodeAddAble?, INodeAddAble>> _objectMap = new Dictionary<string, Func<INodeAddAble?, INodeAddAble>>
+        {
+            { Constants.TokenPossible, (parent) => new Possible(parent) },
+            { Constants.TokenHappened, (parent) => new Happened(parent) },
+            { Constants.TokenVisible, (parent) => new VisibleRequirements(parent) },
+            { Constants.TokenCustomTriggerTooltip, (parent) => new CustomTriggerTooltip(parent) },
+            { Constants.TokenNot, (parent) => new NotModel(parent) },
+            { Constants.TokenOr, (parent) => new OrModel(parent) }
+        };
 
         public IList<Achievement> ParseFile(IDictionary<string, AchievementDescription> descriptions)
         {
@@ -31,20 +40,20 @@ namespace SimpleAchievementFileParser
                     descriptions.TryGetValue(line.Split('=')[1].TrimStart().TrimEnd(), out var value);
                     queue.Enqueue(new KeyValuePair<string, string>(Constants.TokenLocalization, value?.Name ?? string.Empty));
                 }
-                else if (line.Contains(Constants.TokenHasDlc) && !line.Contains("{"))
+                else if (line.Contains(Constants.TokenHasDlc) && !line.Contains('{'))
                 {
                     string dlcName = line.Split('=')[1].Replace("\"", "").TrimStart().TrimEnd();
                     DlcNames.Add(dlcName);
                     queue.Enqueue(new KeyValuePair<string, string>(Constants.TokenHasDlc, dlcName));
                 }
-                else if (line.Contains("{"))
+                else if (line.Contains('{'))
                 {
                     string token = line.Split('=')[0].TrimStart().TrimEnd();
                     string value = line.Split('=')[1].TrimStart().TrimEnd();
                     queue.Enqueue(new KeyValuePair<string, string>(token, value));
                     queue.Enqueue(new KeyValuePair<string, string>("{", ""));
 
-                    if (line.Contains("}"))
+                    if (line.Contains('}'))
                     {
                         token = line.Split('=')[1].TrimStart().TrimEnd().Replace("{ ", "");
                         value = line.Split('=')[2].TrimStart().TrimEnd().Replace(" }", "");
@@ -52,11 +61,11 @@ namespace SimpleAchievementFileParser
                         queue.Enqueue(new KeyValuePair<string, string>("}", ""));
                     }
                 }
-                else if (line.Contains("}"))
+                else if (line.Contains('}'))
                 {
                     queue.Enqueue(new KeyValuePair<string, string>("}", ""));
                 }
-                else if (line.Contains("="))
+                else if (line.Contains('='))
                 {
                     string token = line.Split('=')[0].TrimStart().TrimEnd();
                     string value = line.Split('=')[1].TrimStart().TrimEnd();
@@ -86,53 +95,21 @@ namespace SimpleAchievementFileParser
                     achievements.Add((Achievement)currentObject);
                     nodes.Push(currentObject);
                 }
-                else if (token.Key == Constants.TokenId)
+                else if (token.Key == Constants.TokenId || token.Key == Constants.TokenLocalization)
                 {
-                    currentObject?.Add(Constants.TokenId, token.Value);
+                    currentObject?.Add(token.Key, token.Value);
                 }
-                else if (token.Key == Constants.TokenLocalization)
-                {
-                    currentObject?.Add(Constants.TokenLocalization, token.Value);
-                }
-                else if (token.Key == Constants.TokenPossible)
+                else if (token.Key == Constants.TokenPossible || token.Key == Constants.TokenHappened || token.Key == Constants.TokenVisible)
                 {
                     parentObject = currentObject?.GetParent() ?? currentObject;
-                    currentObject = new Possible(parentObject);
+                    currentObject = _objectMap[token.Key](parentObject);
                     parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
-                else if (token.Key == Constants.TokenHappened)
-                {
-                    parentObject = currentObject?.GetParent() ?? currentObject;
-                    currentObject = new Happened(parentObject);
-                    parentObject?.Add(currentObject);
-                    nodes.Push(currentObject);
-                }
-                else if (token.Key == Constants.TokenVisible)
-                {
-                    parentObject = currentObject?.GetParent() ?? currentObject;
-                    currentObject = new VisibleRequirements(parentObject);
-                    parentObject?.Add(currentObject);
-                    nodes.Push(currentObject);
-                }
-                else if (token.Key == Constants.TokenCustomTriggerTooltip)
+                else if (token.Key == Constants.TokenCustomTriggerTooltip || token.Key == Constants.TokenNot || (token.Key == Constants.TokenOr))
                 {
                     parentObject = currentObject;
-                    currentObject = new CustomTriggerTooltip(parentObject);
-                    parentObject?.Add(currentObject);
-                    nodes.Push(currentObject);
-                }
-                else if (token.Key == Constants.TokenNot)
-                {
-                    parentObject = currentObject;
-                    currentObject = new NotModel(parentObject);
-                    parentObject?.Add(currentObject);
-                    nodes.Push(currentObject);
-                }
-                else if (token.Key == Constants.TokenOr)
-                {
-                    parentObject = currentObject;
-                    currentObject = new OrModel(parentObject);
+                    currentObject = _objectMap[token.Key](parentObject);
                     parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
@@ -143,7 +120,8 @@ namespace SimpleAchievementFileParser
                     parentObject?.Add(currentObject);
                     nodes.Push(currentObject);
                 }
-                else if (token.Key == "{" && (simpleNodes.Count == 0 || simpleNodes.Count > 0 && simpleNodes.Peek().Key != "{")) simpleNodes.Push(new KeyValuePair<string, string>("{", ""));
+                else if (token.Key == "{" && (simpleNodes.Count == 0 || simpleNodes.Count > 0 && simpleNodes.Peek().Key != "{")) 
+                    simpleNodes.Push(new KeyValuePair<string, string>("{", ""));
                 else if (token.Key == "}")
                 {
                     if (nodes.Count > 0)

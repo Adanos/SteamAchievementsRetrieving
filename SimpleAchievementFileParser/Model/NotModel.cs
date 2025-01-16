@@ -2,9 +2,10 @@
 {
     public class NotModel : INodeAddAble
     {
-        public string NumOfCustomNations { get; set; } //num_of_custom_nations
         public List<KeyValuePair<string, string>> Names { get; set; } = [];
         public List<INodeAddAble?> Nodes { get; set; } = [];
+        public string NumOfCustomNations { get; set; } //num_of_custom_nations
+        
         private readonly INodeAddAble? Parent;
 
         public NotModel(INodeAddAble? parent)

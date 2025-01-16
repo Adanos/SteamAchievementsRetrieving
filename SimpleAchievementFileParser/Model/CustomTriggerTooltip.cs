@@ -2,10 +2,11 @@
 {
     public class CustomTriggerTooltip : INodeAddAble
     {
-        public string Tooltip { get; set; } //tooltip 
-        public string HasCountryFlag { get; set; } //has_country_flag
         public List<INodeAddAble?> Nodes { get; set; } = []; //OR
         public List<KeyValuePair<string, string>> Names { get; set; } = [];
+        public string Tooltip { get; set; } //tooltip 
+        public string HasCountryFlag { get; set; } //has_country_flag
+        
         private readonly INodeAddAble? Parent;
 
         public CustomTriggerTooltip(INodeAddAble? parent)

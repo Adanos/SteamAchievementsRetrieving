@@ -1,6 +1,4 @@
-﻿using System.Xml.Linq;
-
-namespace SimpleAchievementFileParser.Model
+﻿namespace SimpleAchievementFileParser.Model
 {
     public class OrModel(INodeAddAble? parent) : INodeAddAble
     {

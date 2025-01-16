@@ -2,13 +2,12 @@
 {
     public class Possible : INodeAddAble
     {
+        public IList<UnspecifiedNode>? UnspecifiedNodes { get; private set; }
+        public NotModel? NotModel { get; set; } // NOT
+        public OrModel? HasOneOfDlc { get; set; } //OR
         public string NormalOrHistoricalNations { get; set; } //normal_or_historical_nations
         public string NormalProvinceValues { get; set; } // normal_province_values
-        public NotModel? NotModel { get; set; } // NOT
-
-        public OrModel? HasOneOfDlc { get; set; } //OR
-
-        public IList<UnspecifiedNode>? UnspecifiedNodes { get; private set; }
+       
         private readonly INodeAddAble? Parent;
 
         public Possible(INodeAddAble? parent)

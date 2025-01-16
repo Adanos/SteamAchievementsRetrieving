@@ -2,12 +2,12 @@
 {
     public class Achievement : INodeAddAble
     {
-        public int Id { get; private set; }
-        public string Name { get; private set; }
+        public IList<UnspecifiedNode>? UnspecifiedNodes { get; set; }
         public Possible? Possible { get; private set; }
         public Happened? Happened { get; private set; }
         public VisibleRequirements? VisibleRequirements { get; private set; }
-        public IList<UnspecifiedNode>? UnspecifiedNodes { get; set; }
+        public string Name { get; private set; }
+        public int Id { get; private set; }
 
         private INodeAddAble? Parent;
 
