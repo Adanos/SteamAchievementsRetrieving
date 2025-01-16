@@ -2,9 +2,9 @@
 {
     public class VisibleRequirements(INodeAddAble? parent) : INodeAddAble
     {
+        public List<OrModel> HasOneOfDlc { get; set; } = []; //OR
         public IList<string> HasAllDlc { get; set; } = [];
 
-        public List<OrModel> HasOneOfDlc { get; set; } = []; //OR
         private readonly INodeAddAble? Parent = parent;
 
         public void Add(string token, string value)

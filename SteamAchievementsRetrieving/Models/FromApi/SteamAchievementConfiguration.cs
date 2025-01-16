@@ -7,7 +7,7 @@
         public string AuthentificationKey { get; set; }
         public string SteamId { get; set; }
         public string Language { get; set; }
-        public bool? IsAchieved { get; set; }
         public string FilePathToSaveResult { get; set; }
+        public bool? IsAchieved { get; set; }
     }
 }
