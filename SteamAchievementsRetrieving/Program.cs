@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SteamAchievementsRetrieving.Managers;
+using System.Threading.Tasks;
 
 namespace SteamAchievementsRetrieving
 {
@@ -7,14 +8,14 @@ namespace SteamAchievementsRetrieving
     {
         private static IConfiguration Configuration;
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Configuration = new ConfigurationBuilder()
                .AddJsonFile("appsettings.json", true, true)
                .Build();
 
             AchievementManager achievementManager = new AchievementManager(Configuration);
-            achievementManager.CreateAchievements();
+            await achievementManager.CreateAchievements();
 
             if (achievementManager.Achievements != null)
             {

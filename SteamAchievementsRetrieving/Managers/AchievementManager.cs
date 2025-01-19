@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SteamAchievementsRetrieving.Managers
 {
@@ -29,7 +30,7 @@ namespace SteamAchievementsRetrieving.Managers
             _filenameCreator = new FilenameCreator(_steamAchievementConfiguration);  
         }
 
-        public void CreateAchievements()
+        public async Task CreateAchievements()
         {
             string pattern = _filenameCreator.CreateFilename(@"*");
             string[] files = Directory.GetFiles(_steamAchievementConfiguration.FilePathToSaveResult, pattern, SearchOption.TopDirectoryOnly);
@@ -41,7 +42,7 @@ namespace SteamAchievementsRetrieving.Managers
             else
             {
                 SteamAchievementsRetrieving steamAchievementsRetrieving = new SteamAchievementsRetrieving(_steamAchievementConfiguration);
-                var results = steamAchievementsRetrieving.GetAllAchievements();
+                var results = await steamAchievementsRetrieving.GetAllAchievements();
 
                 if (results.Success)
                 {
