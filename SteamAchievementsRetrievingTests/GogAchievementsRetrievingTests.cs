@@ -101,7 +101,7 @@ namespace SteamAchievementsRetrievingTests
         }
 
         [Test]
-        public async Task GetAllAchievements_ReturnsError_OnInvalidUri()
+        public void GetAllAchievements_ReturnsError_OnInvalidUri()
         {
             // Arrange
             _configurationMock.AddressApi = "invalid-url";
@@ -109,13 +109,13 @@ namespace SteamAchievementsRetrievingTests
 
             // Act & Assert
             Assert.That(
-                async () => await service.GetAllAchievementsAsync(),
+                service.GetAllAchievementsAsync,
                 Throws.TypeOf<UriFormatException>()
             );
         }
 
         [Test]
-        public async Task GetAllAchievements_ReturnsErrorResponse_OnTimeout()
+        public void GetAllAchievements_ReturnsErrorResponse_OnTimeout()
         {
             // Arrange
             var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
@@ -135,7 +135,7 @@ namespace SteamAchievementsRetrievingTests
 
             // Act & Assert
             Assert.That(
-                async () => await service.GetAllAchievementsAsync(),
+                service.GetAllAchievementsAsync,
                 Throws.TypeOf<TaskCanceledException>()
             );
         }
