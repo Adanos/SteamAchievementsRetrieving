@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using SteamAchievementsRetrieving.Managers;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SteamAchievementsRetrieving
@@ -13,8 +14,8 @@ namespace SteamAchievementsRetrieving
             Configuration = new ConfigurationBuilder()
                .AddJsonFile("appsettings.json", true, true)
                .Build();
-
-            AchievementManager achievementManager = new AchievementManager(Configuration);
+            using HttpClient client = new();
+            AchievementManager achievementManager = new AchievementManager(client, Configuration);
             await achievementManager.CreateAchievements();
 
             if (achievementManager.Achievements != null)

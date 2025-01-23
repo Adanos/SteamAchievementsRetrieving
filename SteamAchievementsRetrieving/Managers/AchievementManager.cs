@@ -9,13 +9,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SteamAchievementsRetrieving.Managers
 {
     internal class AchievementManager
     {
+        private readonly HttpClient _httpClient;
         private readonly SteamAchievementConfiguration _steamAchievementConfiguration;
+        private readonly GogAchievementConfiguration _gogAchievementConfiguration;
         private readonly EuropaUniversalisFilesStructureConfiguration _europaUniversalisFilesStructureConfiguration;
         private readonly FilenameCreator _filenameCreator;
         private IList<AchievementResponse> AchievementsResponse { get; set; }
@@ -23,9 +26,11 @@ namespace SteamAchievementsRetrieving.Managers
 
         public IList<Achievement> Achievements { get; private set; }
 
-        public AchievementManager(IConfiguration configuration)
+        public AchievementManager(HttpClient httpClient, IConfiguration configuration)
         {
+            _httpClient = httpClient;
             _steamAchievementConfiguration = configuration.GetSection(nameof(SteamAchievementConfiguration)).Get<SteamAchievementConfiguration>();
+            _gogAchievementConfiguration = configuration.GetSection(nameof(GogAchievementConfiguration)).Get<GogAchievementConfiguration>();
             _europaUniversalisFilesStructureConfiguration = configuration.GetSection(nameof(EuropaUniversalisFilesStructureConfiguration)).Get<EuropaUniversalisFilesStructureConfiguration>();
             _filenameCreator = new FilenameCreator(_steamAchievementConfiguration);  
         }
@@ -41,19 +46,26 @@ namespace SteamAchievementsRetrieving.Managers
             }
             else
             {
-                SteamAchievementsRetrieving steamAchievementsRetrieving = new SteamAchievementsRetrieving(_steamAchievementConfiguration);
-                var results = await steamAchievementsRetrieving.GetAllAchievements();
+                try
+                {
+                    SteamAchievementsRetrieving steamAchievementsRetrieving = new SteamAchievementsRetrieving(_httpClient, _steamAchievementConfiguration);
+                    var results = await steamAchievementsRetrieving.GetAllAchievementsAsync();
 
-                if (results.Success)
-                {
-                    AchievementsResponse = results.PlayerStats.Achievements;
-                    FilterAchievements();
-                    MapAchievements();
-                    SaveAchievementsToFile(results.PlayerStats.GameName);
+                    if (results.Success)
+                    {
+                        AchievementsResponse = results.PlayerStats.Achievements;
+                        FilterAchievements();
+                        MapAchievements();
+                        SaveAchievementsToFile(results.PlayerStats.GameName);
+                    }
+                    else
+                    {
+                        Console.WriteLine("Error, status code: {0}", results.StatusCode);
+                    }
                 }
-                else 
+                catch (Exception ex) when (ex is InvalidOperationException or HttpRequestException or Exception) 
                 {
-                    Console.WriteLine("Error, status code: {0}", results.StatusCode);
+                    Console.WriteLine("Error, message: {0}, inner exception {1}", ex.Message, ex.InnerException);
                 }
             }
         }
