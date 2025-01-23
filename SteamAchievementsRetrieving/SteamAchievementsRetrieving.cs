@@ -10,37 +10,61 @@ namespace SteamAchievementsRetrieving
 {
     public class SteamAchievementsRetrieving
     {
+        private readonly HttpClient _httpClient;
         private readonly SteamAchievementConfiguration _steamAchievementConfiguration;
-        public SteamAchievementsRetrieving(SteamAchievementConfiguration steamAchievementConfiguration)
+        public SteamAchievementsRetrieving(HttpClient httpClient, SteamAchievementConfiguration steamAchievementConfiguration)
         {
+            _httpClient = httpClient;
             _steamAchievementConfiguration = steamAchievementConfiguration;
         }
 
-        public async Task<SteamAchievementResponse> GetAllAchievements()
+        public async Task<SteamAchievementResponse> GetAllAchievementsAsync()
         {
-            SteamAchievementResponse response = new SteamAchievementResponse();
-            using(HttpClient client = new())
+            var response = new SteamAchievementResponse();
+
+            if (string.IsNullOrWhiteSpace(_steamAchievementConfiguration.AddressApi) || string.IsNullOrWhiteSpace(_steamAchievementConfiguration.ApplicationId) ||
+                string.IsNullOrWhiteSpace(_steamAchievementConfiguration.AuthentificationKey) || string.IsNullOrWhiteSpace(_steamAchievementConfiguration.SteamId) ||
+                string.IsNullOrWhiteSpace(_steamAchievementConfiguration.Language))
             {
-                client.BaseAddress = new Uri(_steamAchievementConfiguration.AddressApi);
-                client.DefaultRequestHeaders.Accept.Add(
-                    new MediaTypeWithQualityHeaderValue(Constants.HeaderJsonType));
-                var httpValues = HttpUtility.ParseQueryString(string.Empty);
-                httpValues.Add(Constants.ApplicationIdWithQuestionMarkParam, _steamAchievementConfiguration.ApplicationId);
-                httpValues.Add(Constants.AuthentificationKeyParam, _steamAchievementConfiguration.AuthentificationKey);
-                httpValues.Add(Constants.SteamIdParam, _steamAchievementConfiguration.SteamId);
-                httpValues.Add(Constants.LanguageParam, _steamAchievementConfiguration.Language);
+                throw new InvalidOperationException("Invalid Steam achievement configuration.");
+            }
 
-                var achievements = await client.GetAsync(httpValues.ToString());
-                response.StatusCode = achievements.StatusCode;
+            try
+            {
+                var uriBuilder = new UriBuilder(_steamAchievementConfiguration.AddressApi);
+                var query = HttpUtility.ParseQueryString(string.Empty);
+                query[Constants.ApplicationIdWithQuestionMarkParam] = _steamAchievementConfiguration.ApplicationId;
+                query[Constants.AuthentificationKeyParam] = _steamAchievementConfiguration.AuthentificationKey;
+                query[Constants.SteamIdParam] = _steamAchievementConfiguration.SteamId;
+                query[Constants.LanguageParam] = _steamAchievementConfiguration.Language;
+                uriBuilder.Query = query.ToString();
 
-                if (achievements.IsSuccessStatusCode)
+                _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(Constants.HeaderJsonType));
+
+                var achievementsResponse = await _httpClient.GetAsync(uriBuilder.Uri);
+
+                response.StatusCode = achievementsResponse.StatusCode;
+
+                if (achievementsResponse.IsSuccessStatusCode)
                 {
-                    var result = achievements.Content.ReadAsStringAsync();
-                    response = JsonConvert.DeserializeObject<SteamAchievementResponse>(result.Result);
+                    var content = await achievementsResponse.Content.ReadAsStringAsync();
+                    response = JsonConvert.DeserializeObject<SteamAchievementResponse>(content);
                     response.Success = true;
                 }
             }
-            
+            catch (HttpRequestException ex)
+            {
+                response.Success = false;
+                response.ErrorMessage = $"HTTP request failed: {ex.Message}";
+                throw;
+            }
+            catch (Exception ex)
+            {
+                response.Success = false;
+                response.ErrorMessage = $"An error occurred: {ex.Message}";
+                throw;
+            }
+
             return response;
         }
     }
