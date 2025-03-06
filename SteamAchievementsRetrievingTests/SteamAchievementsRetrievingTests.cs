@@ -7,7 +7,7 @@ using Moq;
 using Moq.Protected;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using SteamAchievementsRetrieving.Models.FromApi;
+using SteamAchievementsRetrieving.Models.FromApi.Steam;
 
 namespace SteamAchievementsRetrievingTests
 {

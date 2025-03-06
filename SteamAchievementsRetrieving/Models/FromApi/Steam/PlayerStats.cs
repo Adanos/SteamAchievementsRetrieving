@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SteamAchievementsRetrieving.Models.FromApi
+namespace SteamAchievementsRetrieving.Models.FromApi.Steam
 {
     public class PlayerStats
     {

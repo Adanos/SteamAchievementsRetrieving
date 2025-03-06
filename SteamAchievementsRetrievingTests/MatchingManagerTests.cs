@@ -23,7 +23,7 @@ namespace SteamAchievementsRetrievingTests
         [TestCase("As Spain have Paris, Roma, Berlin under you.", "Spain")]
         [TestCase("As the Papacy own Jerusalem.", "the Papacy")]
         [TestCase("As Perm, own or have a subject own the Russian, Siberian and Cascadian Regions.", "Perm")]
-        [TestCase("Form Bavaria starting as München and win with Dortmund and Berlin.", "München")]
+        [TestCase("Form Bavaria starting as Mï¿½nchen and win with Dortmund and Berlin.", "Mï¿½nchen")]
         [TestCase("As Asturias, drink a rum.", "Asturias")]
         [TestCase("Starting as either Russia or France, own Rome.", "Russia, France")]
         [TestCase("Starting as either the Livonian Order or the Teutonic Order, own Rome.", "the Livonian Order, the Teutonic Order")]

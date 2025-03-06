@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using SteamAchievementsRetrieving.Models.FromApi.Steam;
 
 namespace SteamAchievementsRetrieving.IO
 {
@@ -25,10 +26,8 @@ namespace SteamAchievementsRetrieving.IO
                 var indexesOfAnd = Enumerable.Range(0, markedDlc.Count).Where(i => markedDlc[i] == Constants.And);
                 var indexesOfOr = Enumerable.Range(0, markedDlc.Count).Where(i => markedDlc[i] == Constants.Or);
 
-                achievements.Add(new Achievement()
+                achievements.Add(new Achievement(new AchievementResponse() { Name = words[0], Description = words[1]})
                 {
-                    Name = words[0],
-                    Description = words[1],
                     Countries = words[2].Split(Constants.CountriesSeparator).ToHashSet(),
                     IsRequiredDlc = isRequiredDlc,
                     AllRequiredDlcNames = dlcNameDictionary.Where(x => indexesOfAnd.Contains(x.Key)).Select(x => x.Value).ToList(),

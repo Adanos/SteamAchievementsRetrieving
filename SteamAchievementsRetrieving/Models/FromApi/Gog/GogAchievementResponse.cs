@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace SteamAchievementsRetrieving.Models.FromApi
+namespace SteamAchievementsRetrieving.Models.FromApi.Gog
 {
     public class GogAchievementResponse
     {

@@ -1,4 +1,4 @@
-﻿namespace SteamAchievementsRetrieving.Models.FromApi
+﻿namespace SteamAchievementsRetrieving.Models.FromApi.Steam
 {
     public class SteamAchievementConfiguration
     {

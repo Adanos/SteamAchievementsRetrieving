@@ -2,6 +2,7 @@
 using SteamAchievementsRetrieving;
 using SteamAchievementsRetrieving.Models;
 using System.Collections.Generic;
+using SteamAchievementsRetrieving.Models.FromApi.Steam;
 
 namespace SteamAchievementsRetrievingTests
 {
@@ -11,13 +12,14 @@ namespace SteamAchievementsRetrievingTests
         [SetUp]
         public void Setup()
         {
+            AchievementResponse achievementResponse = new AchievementResponse() { Achieved = true, Name = "", Description = "" };
             Achievements = new List<Achievement>()
             {
-                new Achievement() { Name = "Test 1", Description = "As the Knights conquer the world." },
-                new Achievement() { Name = "Test 2", Description = "As The Knights have 1000 gold." },
-                new Achievement() { Name = "Test 3", Description = "Win a war as Cyprus." },
-                new Achievement() { Name = "Test 4", Description = "As the Papacy become emperor." },
-                new Achievement() { Name = "Test 5", Description = "Own Jerusalem as the Papal State." }
+                new Achievement(achievementResponse) { Name = "Test 1", Description = "As the Knights conquer the world." },
+                new Achievement(achievementResponse) { Name = "Test 2", Description = "As The Knights have 1000 gold." },
+                new Achievement(achievementResponse) { Name = "Test 3", Description = "Win a war as Cyprus." },
+                new Achievement(achievementResponse) { Name = "Test 4", Description = "As the Papacy become emperor." },
+                new Achievement(achievementResponse) { Name = "Test 5", Description = "Own Jerusalem as the Papal State." }
             };
         }
 

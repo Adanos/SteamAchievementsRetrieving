@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SteamAchievementsRetrieving.Models.FromApi;
+using SteamAchievementsRetrieving.Models.FromApi.Gog;
 using System;
 using System.Net.Http.Headers;
 using System.Net.Http;

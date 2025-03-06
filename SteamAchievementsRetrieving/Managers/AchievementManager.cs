@@ -2,7 +2,8 @@
 using SimpleAchievementFileParser;
 using SteamAchievementsRetrieving.IO;
 using SteamAchievementsRetrieving.Models;
-using SteamAchievementsRetrieving.Models.FromApi;
+using SteamAchievementsRetrieving.Models.FromApi.Steam;
+using SteamAchievementsRetrieving.Models.FromApi.Gog;
 using SteamAchievementsRetrieving.Models.FromGameStructure;
 using SteamAchievementsRetrieving.Services;
 using System;
@@ -86,7 +87,7 @@ namespace SteamAchievementsRetrieving.Managers
                     ?.VisibleRequirements?.HasAllDlc;
                 var oneOfDlcRequired = requirements.FirstOrDefault(x => x.Name == achievement.Name)
                     ?.VisibleRequirements?.HasOneOfDlc?.SelectMany(x => x.Names);
-                Achievements.Add(new Achievement()
+                Achievements.Add(new Achievement(achievement)
                 {
                     Achieved = achievement.Achieved,
                     Description = achievement.Description,
