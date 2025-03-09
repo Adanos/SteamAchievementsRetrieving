@@ -19,8 +19,7 @@ namespace SteamAchievementsRetrieving
 
         public async Task<GogAchievementResponse> GetAllAchievementsAsync()
         {
-            if (string.IsNullOrWhiteSpace(_gogAchievementConfiguration.AddressApi) || string.IsNullOrWhiteSpace(_gogAchievementConfiguration.User) 
-                || string.IsNullOrWhiteSpace(_gogAchievementConfiguration.GameId))
+            if (string.IsNullOrWhiteSpace(_gogAchievementConfiguration.AddressApi) || string.IsNullOrWhiteSpace(_gogAchievementConfiguration.User))
             {
                 throw new InvalidOperationException("Invalid configuration for Gog achievements API.");
             }
@@ -29,9 +28,10 @@ namespace SteamAchievementsRetrieving
 
             try
             {
-                var baseAddress = string.Format(_gogAchievementConfiguration.AddressApi, Uri.EscapeDataString(_gogAchievementConfiguration.User),
-                    Uri.EscapeDataString(_gogAchievementConfiguration.GameId));
-
+                var baseAddress = _gogAchievementConfiguration.AddressApi
+                    .Replace("{User}", Uri.EscapeDataString(_gogAchievementConfiguration.User))
+                    .Replace("{GameId}", Uri.EscapeDataString(_gogAchievementConfiguration.GameId));
+                
                 _httpClient.BaseAddress = new Uri(baseAddress);
                 _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(Constants.HeaderJsonType));
 

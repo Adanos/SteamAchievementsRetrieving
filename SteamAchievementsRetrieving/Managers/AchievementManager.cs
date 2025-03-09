@@ -50,11 +50,14 @@ namespace SteamAchievementsRetrieving.Managers
                 try
                 {
                     SteamAchievementsRetrieving steamAchievementsRetrieving = new SteamAchievementsRetrieving(_httpClient, _steamAchievementConfiguration);
+                    GogAchievementsRetrieving gogAchievementsRetrieving = new GogAchievementsRetrieving(_httpClient, _gogAchievementConfiguration);
                     var results = await steamAchievementsRetrieving.GetAllAchievementsAsync();
+                    //var results = await gogAchievementsRetrieving.GetAllAchievementsAsync();
 
                     if (results.Success)
                     {
                         AchievementsResponse = results.PlayerStats.Achievements;
+                        //AchievementsResponse = results.Statistics.Achievements;
                         FilterAchievements();
                         MapAchievements();
                         SaveAchievementsToFile(results.PlayerStats.GameName);
