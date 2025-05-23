@@ -23,7 +23,8 @@ namespace SimpleAchievementFileParserTests
         [Test]
         public void AchievementsStructureFileParser_ParseFileWithOnlyCommentary_ReturnObject()
         {
-            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementOnlyCommentaryTest.txt");
+            var path = Path.Combine("FileCaseTests", "AchievementsStructure", "achievementOnlyCommentaryTest.txt");
+            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new(path);
 
             var result = simpleParser.ParseFile(_descriptions);
             Assert.That(result.Count, Is.EqualTo(0));
@@ -32,7 +33,8 @@ namespace SimpleAchievementFileParserTests
         [Test]
         public void AchievementsStructureFileParser_ParseSimpleFile_ReturnObject()
         {
-            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementTest.txt");
+            var path = Path.Combine("FileCaseTests", "AchievementsStructure", "achievementTest.txt");
+            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new(path);
 
             var result = simpleParser.ParseFile(_descriptions);
             Assert.That(result.Count, Is.EqualTo(1));
@@ -43,7 +45,8 @@ namespace SimpleAchievementFileParserTests
         [Test]
         public void AchievementsStructureFileParser_ParseFile_ReturnObject()
         {
-            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementTest2.txt");
+            var path = Path.Combine("FileCaseTests", "AchievementsStructure", "achievementTest2.txt");
+            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new(path);
 
             var result = simpleParser.ParseFile(_descriptions);
             Assert.That(result.Count, Is.EqualTo(1));
@@ -56,7 +59,8 @@ namespace SimpleAchievementFileParserTests
         [Test]
         public void AchievementsStructureFileParser_CreateAchievements_ReturnObject()
         {
-            var fileStream = new FileStream("QueueCaseTests\\QueueCaseTest2.txt", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            var path = Path.Combine("QueueCaseTests", "QueueCaseTest2.txt");
+            var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var reader = new StreamReader(fileStream);
             string? line = string.Empty;
 
@@ -67,7 +71,8 @@ namespace SimpleAchievementFileParserTests
                 queue.Enqueue(new KeyValuePair<string, string>(values[0], values[1]));
             }
 
-            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementTest2.txt");
+            var testCasesPath = Path.Combine("FileCaseTests", "AchievementsStructure", "achievementTest2.txt");
+            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new(testCasesPath);
 
             var result = simpleParser.CreateAchievements(queue);
             Assert.That(result.FirstOrDefault()?.Id, Is.EqualTo(17));
@@ -80,7 +85,8 @@ namespace SimpleAchievementFileParserTests
         [Test]
         public void AchievementsStructureFileParser_ParseFileWithTwoOrsInVisible_ReturnObject()
         {
-            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementTwoOrsInVisibleTest.txt");
+            var testCasesPath = Path.Combine("FileCaseTests", "AchievementsStructure", "achievementTwoOrsInVisibleTest.txt");
+            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new(testCasesPath);
 
             var result = simpleParser.ParseFile(_descriptions);
             Assert.That(result.Count, Is.EqualTo(1));
@@ -96,7 +102,8 @@ namespace SimpleAchievementFileParserTests
         [Test]
         public void AchievementsStructureFileParser_ParseFileWithTokenProvinceId_ReturnObject()
         {
-            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementWithProvinceIdTest.txt");
+            var testCasesPath = Path.Combine("FileCaseTests", "AchievementsStructure", "achievementWithProvinceIdTest.txt");
+            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new(testCasesPath);
 
             var result = simpleParser.ParseFile(_descriptions);
             Assert.That(result.Count, Is.EqualTo(1));
@@ -109,7 +116,8 @@ namespace SimpleAchievementFileParserTests
         [Test]
         public void AchievementsStructureFileParser_ParseFileWithTwoAchievements_ReturnObject()
         {
-            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\twoAchievementsTest.txt");
+            var testCasesPath = Path.Combine("FileCaseTests", "AchievementsStructure", "twoAchievementsTest.txt");
+            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new(testCasesPath);
 
             var result = simpleParser.ParseFile(_descriptions);
             Assert.That(result.Count, Is.EqualTo(2));
@@ -132,7 +140,8 @@ namespace SimpleAchievementFileParserTests
         [Test]
         public void AchievementsStructureFileParser_ParseFileWithManyOrTags_ReturnObject()
         {
-            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new("FileCaseTests\\AchievementsStructure\\achievementWithManyOrTags.txt");
+            var testCasesPath = Path.Combine("FileCaseTests", "AchievementsStructure", "achievementWithManyOrTags.txt");
+            SimpleAchievementFileParser.AchievementsStructureFileParser simpleParser = new(testCasesPath);
 
             var result = simpleParser.ParseFile(_descriptions);
             Assert.That(result.Count, Is.EqualTo(1));

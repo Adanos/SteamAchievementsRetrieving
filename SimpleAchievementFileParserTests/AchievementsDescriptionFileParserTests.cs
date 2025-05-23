@@ -7,7 +7,8 @@ namespace SimpleAchievementFileParserTests
         [Test]
         public void AchievementsDescriptionFileParser_ParseSimpleFile_ReturnObject()
         {
-            SimpleAchievementFileParser.AchievementsDescriptionFileParser simpleParser = new("FileCaseTests\\AchievementsDescription\\description01.txt");
+            var path = Path.Combine("FileCaseTests", "AchievementsDescription", "description01.txt");
+            SimpleAchievementFileParser.AchievementsDescriptionFileParser simpleParser = new(path);
 
             var result = simpleParser.ParseFile();
             Assert.That(result.Count, Is.EqualTo(1));
@@ -19,7 +20,8 @@ namespace SimpleAchievementFileParserTests
         [Test]
         public void AchievementsDescriptionFileParser_ParseFileWithTwoDescription_ReturnObject()
         {
-            SimpleAchievementFileParser.AchievementsDescriptionFileParser simpleParser = new("FileCaseTests\\AchievementsDescription\\description02.txt");
+            var path = Path.Combine("FileCaseTests", "AchievementsDescription", "description02.txt");
+            SimpleAchievementFileParser.AchievementsDescriptionFileParser simpleParser = new(path);
 
             var result = simpleParser.ParseFile();
             Assert.That(result.Count, Is.EqualTo(2));
@@ -34,7 +36,8 @@ namespace SimpleAchievementFileParserTests
         [Test]
         public void AchievementsDescriptionFileParser_ParseFileWithMissingDescriptions_ReturnObject()
         {
-            SimpleAchievementFileParser.AchievementsDescriptionFileParser simpleParser = new("FileCaseTests\\AchievementsDescription\\description03.txt");
+            var path = Path.Combine("FileCaseTests", "AchievementsDescription", "description03.txt");
+            SimpleAchievementFileParser.AchievementsDescriptionFileParser simpleParser = new(path);
 
             var result = simpleParser.ParseFile();
             Assert.That(result.Count, Is.EqualTo(3));
