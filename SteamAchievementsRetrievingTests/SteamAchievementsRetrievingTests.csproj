@@ -22,4 +22,10 @@
     <ProjectReference Include="..\SteamAchievementsRetrieving\SteamAchievementsRetrieving.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="HtmlTestCase\GogAchievementsTestCase.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

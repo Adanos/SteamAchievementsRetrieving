@@ -1,12 +1,18 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
 
 namespace SteamAchievementsRetrieving.Models.FromApi.Steam
 {
-    public class SteamAchievementResponse
+    public class SteamAchievementResponse : AchievementsResponse
     {
-        public HttpStatusCode StatusCode { get; set; }
         public PlayerStats PlayerStats { get; set; }
-        public bool Success { get; set; }
-        public string ErrorMessage { get; internal set; }
+        public IList<AchievementResponse> GetAchievements()
+        {
+            return PlayerStats.Achievements;
+        }
+
+        public string GetGameName()
+        {
+            return PlayerStats.GameName;
+        }
     }
 }

@@ -5,10 +5,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
+using SteamAchievementsRetrieving.Models.FromApi;
 
 namespace SteamAchievementsRetrieving
 {
-    public class SteamAchievementsRetrieving
+    public class SteamAchievementsRetrieving : IAchievementsRetrieving
     {
         private readonly HttpClient _httpClient;
         private readonly SteamAchievementConfiguration _steamAchievementConfiguration;
@@ -18,7 +19,7 @@ namespace SteamAchievementsRetrieving
             _steamAchievementConfiguration = steamAchievementConfiguration;
         }
 
-        public async Task<SteamAchievementResponse> GetAllAchievementsAsync()
+        public async Task<AchievementsResponse> GetAllAchievementsAsync()
         {
             var response = new SteamAchievementResponse();
 

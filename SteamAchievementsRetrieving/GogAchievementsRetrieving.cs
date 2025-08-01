@@ -1,30 +1,42 @@
 ﻿using Newtonsoft.Json;
 using SteamAchievementsRetrieving.Models.FromApi.Gog;
 using System;
+using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Net.Http;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using SteamAchievementsRetrieving.JsonParsers;
+using SteamAchievementsRetrieving.Models;
+using SteamAchievementsRetrieving.Models.FromApi;
 
 namespace SteamAchievementsRetrieving
 {
-    public class GogAchievementsRetrieving
+    public class GogAchievementsRetrieving : IAchievementsRetrieving
     {
         private readonly HttpClient _httpClient;
         private readonly GogAchievementConfiguration _gogAchievementConfiguration;
-        public GogAchievementsRetrieving(HttpClient httpClient, GogAchievementConfiguration gogAchievementConfiguration)
+        private readonly IAchievementParserDispatcher _achievementParserDispatcher;
+        private readonly IParseJsonFromHtml _parseJsonFromHtml;
+
+        public GogAchievementsRetrieving(HttpClient httpClient, IAchievementParserDispatcher achievementParserDispatcher, 
+            IParseJsonFromHtml parseJsonFromHtml, GogAchievementConfiguration gogAchievementConfiguration)
         {
             _httpClient = httpClient;
+            _achievementParserDispatcher = achievementParserDispatcher;
+            _parseJsonFromHtml = parseJsonFromHtml;
             _gogAchievementConfiguration = gogAchievementConfiguration;
         }
 
-        public async Task<GogAchievementResponse> GetAllAchievementsAsync()
+        public async Task<AchievementsResponse> GetAllAchievementsAsync()
         {
             if (string.IsNullOrWhiteSpace(_gogAchievementConfiguration.AddressApi) || string.IsNullOrWhiteSpace(_gogAchievementConfiguration.User))
             {
                 throw new InvalidOperationException("Invalid configuration for Gog achievements API.");
             }
 
-            var response = new GogAchievementResponse();
+            var response = new AchievementsResponse();
 
             try
             {
@@ -42,8 +54,8 @@ namespace SteamAchievementsRetrieving
                 if (achievementsResponse.IsSuccessStatusCode)
                 {
                     var content = await achievementsResponse.Content.ReadAsStringAsync();
-                    response = JsonConvert.DeserializeObject<GogAchievementResponse>(content);
-                    response.Success = true;
+                    ParseJsonFromHtml parser = new ParseJsonFromHtml(_achievementParserDispatcher);
+                    response = _parseJsonFromHtml.ParseHtml(content);
                 }
             }
             catch (UriFormatException ex)

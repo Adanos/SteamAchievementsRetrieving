@@ -1,12 +1,18 @@
-﻿using System.Net;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Text.Json.Serialization;
 
 namespace SteamAchievementsRetrieving.Models.FromApi.Gog
 {
-    public class GogAchievementResponse
+    public class GogAchievementResponse : AchievementsResponse
     {
-        public GogStatistics Statistics { get; set; }
-        public HttpStatusCode StatusCode { get; set; }
-        public bool Success { get; set; }
-        public string ErrorMessage { get; internal set; }
+        [JsonIgnore]
+        public GogStat Stat { get; set; }
+        [JsonPropertyName("stats")]
+        private Dictionary<string, GogStat> StatsDict
+        {
+            set => Stat = value?.Values.FirstOrDefault();
+        }
     }
 }

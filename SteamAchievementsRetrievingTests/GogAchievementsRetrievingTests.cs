@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -8,6 +9,9 @@ using Moq.Protected;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SteamAchievementsRetrieving;
+using SteamAchievementsRetrieving.JsonParsers;
+using SteamAchievementsRetrieving.Models;
+using SteamAchievementsRetrieving.Models.FromApi;
 using SteamAchievementsRetrieving.Models.FromApi.Gog;
 
 namespace SteamAchievementsRetrievingTests
@@ -17,27 +21,62 @@ namespace SteamAchievementsRetrievingTests
     {
         private Mock<IHttpClientFactory> _httpClientFactoryMock;
         private GogAchievementConfiguration _configurationMock;
+        private Mock<IAchievementParserDispatcher> _achievementParserDispatcherMock;
+        private Mock<IParseJsonFromHtml> _parseJsonFromHtmlMock;
 
         [SetUp]
         public void SetUp()
         {
             _httpClientFactoryMock = new Mock<IHttpClientFactory>();
+            _achievementParserDispatcherMock = new Mock<IAchievementParserDispatcher>();
+            _parseJsonFromHtmlMock = new Mock<IParseJsonFromHtml>();
             _configurationMock = new GogAchievementConfiguration
             {
                 AddressApi = "https://www.gog.com/u/{0}/game/{1}",
                 User = "testUser",
                 GameId = "12345"
             };
+            var expectedAchievements = new List<GameAchievement>
+            {
+                new GameAchievement
+                {
+                    Name = "Doge Coins",
+                    Description = "Starting as Venice, become the best.",
+                    IsUnlocked = true,
+                },
+                new GameAchievement
+                {
+                    Name = "New achievement",
+                    Description = "Starting as any Mayan country, conquer the world",
+                    IsUnlocked = false,
+                }
+            };
+            _achievementParserDispatcherMock
+                .Setup(d => d.Parse(It.IsAny<string>()))
+                .Returns(expectedAchievements);
+            
+            _parseJsonFromHtmlMock
+                .Setup(p => p.ParseHtml(It.IsAny<string>()))
+                .Returns(new AchievementsResponse
+                {
+                    Achievements = new List<GameAchievement>
+                    {
+                        new GameAchievement { Name = "Test", Description = "Desc" }
+                    },
+                    Success = true,
+                    StatusCode = System.Net.HttpStatusCode.OK
+                });
         }
 
         [Test]
         public async Task GetAllAchievements_ReturnsSuccessResponse()
         {
             // Arrange
-            var expectedResponse = new GogAchievementResponse
+            var expectedResponse = new AchievementsResponse
             {
                 Success = true,
-                StatusCode = HttpStatusCode.OK
+                StatusCode = HttpStatusCode.OK,
+                Achievements = new List<GameAchievement>(){ new GameAchievement() {GameName = "Name", Description = "desc", Name = "name", IsUnlocked = false} }
             };
 
             var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
@@ -51,13 +90,14 @@ namespace SteamAchievementsRetrievingTests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(JsonConvert.SerializeObject(expectedResponse))
+                    Content = new StringContent(
+                        $@"window.profilesData.achievements={JsonConvert.SerializeObject(expectedResponse.Achievements)}")
                 });
 
             var client = new HttpClient(handlerMock.Object);
             _httpClientFactoryMock.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
-            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _configurationMock);
+            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _parseJsonFromHtmlMock.Object, _configurationMock);
 
             // Act
             var result = await service.GetAllAchievementsAsync();
@@ -89,7 +129,7 @@ namespace SteamAchievementsRetrievingTests
             var client = new HttpClient(handlerMock.Object);
             _httpClientFactoryMock.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
-            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _configurationMock);
+            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _parseJsonFromHtmlMock.Object, _configurationMock);
 
             // Act
             var result = await service.GetAllAchievementsAsync();
@@ -105,7 +145,7 @@ namespace SteamAchievementsRetrievingTests
         {
             // Arrange
             _configurationMock.AddressApi = "invalid-url";
-            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _configurationMock);
+            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _parseJsonFromHtmlMock.Object, _configurationMock);
 
             // Act & Assert
             Assert.That(
@@ -131,7 +171,7 @@ namespace SteamAchievementsRetrievingTests
             var client = new HttpClient(handlerMock.Object);
             _httpClientFactoryMock.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
-            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _configurationMock);
+            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _parseJsonFromHtmlMock.Object, _configurationMock);
 
             // Act & Assert
             Assert.That(

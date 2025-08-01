@@ -12,6 +12,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SteamAchievementsRetrieving.JsonParsers;
 
 namespace SteamAchievementsRetrieving.Managers
 {
@@ -39,7 +40,7 @@ namespace SteamAchievementsRetrieving.Managers
         public async Task CreateAchievements()
         {
             string pattern = _filenameCreator.CreateFilename(@"*");
-            string[] files = Directory.GetFiles(_steamAchievementConfiguration.FilePathToSaveResult, pattern, SearchOption.TopDirectoryOnly);
+            string[] files = Directory.GetFiles(_gogAchievementConfiguration.FilePathToSaveResult, pattern, SearchOption.TopDirectoryOnly);
 
             if (files.Length > 0)
             {
@@ -49,18 +50,20 @@ namespace SteamAchievementsRetrieving.Managers
             {
                 try
                 {
-                    SteamAchievementsRetrieving steamAchievementsRetrieving = new SteamAchievementsRetrieving(_httpClient, _steamAchievementConfiguration);
-                    GogAchievementsRetrieving gogAchievementsRetrieving = new GogAchievementsRetrieving(_httpClient, _gogAchievementConfiguration);
-                    var results = await steamAchievementsRetrieving.GetAllAchievementsAsync();
-                    //var results = await gogAchievementsRetrieving.GetAllAchievementsAsync();
+                    AchievementParserDispatcher achievementParserDispatcher = new AchievementParserDispatcher();
+                    IParseJsonFromHtml parseJsonFromHtml = new ParseJsonFromHtml(achievementParserDispatcher);
+                    //IAchievementsRetrieving steamAchievementsRetrieving = new SteamAchievementsRetrieving(_httpClient, _steamAchievementConfiguration);
+                    IAchievementsRetrieving gogAchievementsRetrieving = new GogAchievementsRetrieving(_httpClient, achievementParserDispatcher, parseJsonFromHtml, _gogAchievementConfiguration);
+                    //var results = await steamAchievementsRetrieving.GetAllAchievementsAsync();
+                    var results = await gogAchievementsRetrieving.GetAllAchievementsAsync();
 
                     if (results.Success)
                     {
-                        AchievementsResponse = results.PlayerStats.Achievements;
+                        //AchievementsResponse = results.Achievements;
                         //AchievementsResponse = results.Statistics.Achievements;
                         FilterAchievements();
                         MapAchievements();
-                        SaveAchievementsToFile(results.PlayerStats.GameName);
+                        SaveAchievementsToFile(results.Achievements.FirstOrDefault()?.GameName);
                     }
                     else
                     {
