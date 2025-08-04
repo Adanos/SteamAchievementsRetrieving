@@ -2,7 +2,6 @@
 using SteamAchievementsRetrieving;
 using SteamAchievementsRetrieving.Models;
 using System.Collections.Generic;
-using SteamAchievementsRetrieving.Models.FromApi.Steam;
 
 namespace SteamAchievementsRetrievingTests
 {

@@ -9,7 +9,6 @@ using Moq.Protected;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SteamAchievementsRetrieving;
-using SteamAchievementsRetrieving.JsonParsers;
 using SteamAchievementsRetrieving.Models;
 using SteamAchievementsRetrieving.Models.FromApi;
 using SteamAchievementsRetrieving.Models.FromApi.Gog;
@@ -21,14 +20,12 @@ namespace SteamAchievementsRetrievingTests
     {
         private Mock<IHttpClientFactory> _httpClientFactoryMock;
         private GogAchievementConfiguration _configurationMock;
-        private Mock<IAchievementParserDispatcher> _achievementParserDispatcherMock;
         private Mock<IParseJsonFromHtml> _parseJsonFromHtmlMock;
 
         [SetUp]
         public void SetUp()
         {
             _httpClientFactoryMock = new Mock<IHttpClientFactory>();
-            _achievementParserDispatcherMock = new Mock<IAchievementParserDispatcher>();
             _parseJsonFromHtmlMock = new Mock<IParseJsonFromHtml>();
             _configurationMock = new GogAchievementConfiguration
             {
@@ -51,9 +48,6 @@ namespace SteamAchievementsRetrievingTests
                     IsUnlocked = false,
                 }
             };
-            _achievementParserDispatcherMock
-                .Setup(d => d.Parse(It.IsAny<string>()))
-                .Returns(expectedAchievements);
             
             _parseJsonFromHtmlMock
                 .Setup(p => p.ParseHtml(It.IsAny<string>()))
@@ -97,7 +91,7 @@ namespace SteamAchievementsRetrievingTests
             var client = new HttpClient(handlerMock.Object);
             _httpClientFactoryMock.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
-            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _parseJsonFromHtmlMock.Object, _configurationMock);
+            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _parseJsonFromHtmlMock.Object, _configurationMock);
 
             // Act
             var result = await service.GetAllAchievementsAsync();
@@ -129,7 +123,7 @@ namespace SteamAchievementsRetrievingTests
             var client = new HttpClient(handlerMock.Object);
             _httpClientFactoryMock.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
-            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _parseJsonFromHtmlMock.Object, _configurationMock);
+            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _parseJsonFromHtmlMock.Object, _configurationMock);
 
             // Act
             var result = await service.GetAllAchievementsAsync();
@@ -145,7 +139,7 @@ namespace SteamAchievementsRetrievingTests
         {
             // Arrange
             _configurationMock.AddressApi = "invalid-url";
-            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _parseJsonFromHtmlMock.Object, _configurationMock);
+            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _parseJsonFromHtmlMock.Object, _configurationMock);
 
             // Act & Assert
             Assert.That(
@@ -171,7 +165,7 @@ namespace SteamAchievementsRetrievingTests
             var client = new HttpClient(handlerMock.Object);
             _httpClientFactoryMock.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
-            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _parseJsonFromHtmlMock.Object, _configurationMock);
+            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _parseJsonFromHtmlMock.Object, _configurationMock);
 
             // Act & Assert
             Assert.That(

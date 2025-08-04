@@ -1,14 +1,8 @@
-﻿using Newtonsoft.Json;
-using SteamAchievementsRetrieving.Models.FromApi.Gog;
+﻿using SteamAchievementsRetrieving.Models.FromApi.Gog;
 using System;
-using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Net.Http;
-using System.Text.Json.Serialization;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using SteamAchievementsRetrieving.JsonParsers;
-using SteamAchievementsRetrieving.Models;
 using SteamAchievementsRetrieving.Models.FromApi;
 
 namespace SteamAchievementsRetrieving
@@ -17,14 +11,12 @@ namespace SteamAchievementsRetrieving
     {
         private readonly HttpClient _httpClient;
         private readonly GogAchievementConfiguration _gogAchievementConfiguration;
-        private readonly IAchievementParserDispatcher _achievementParserDispatcher;
         private readonly IParseJsonFromHtml _parseJsonFromHtml;
 
-        public GogAchievementsRetrieving(HttpClient httpClient, IAchievementParserDispatcher achievementParserDispatcher, 
-            IParseJsonFromHtml parseJsonFromHtml, GogAchievementConfiguration gogAchievementConfiguration)
+        public GogAchievementsRetrieving(HttpClient httpClient, IParseJsonFromHtml parseJsonFromHtml, 
+            GogAchievementConfiguration gogAchievementConfiguration)
         {
             _httpClient = httpClient;
-            _achievementParserDispatcher = achievementParserDispatcher;
             _parseJsonFromHtml = parseJsonFromHtml;
             _gogAchievementConfiguration = gogAchievementConfiguration;
         }
@@ -54,7 +46,6 @@ namespace SteamAchievementsRetrieving
                 if (achievementsResponse.IsSuccessStatusCode)
                 {
                     var content = await achievementsResponse.Content.ReadAsStringAsync();
-                    ParseJsonFromHtml parser = new ParseJsonFromHtml(_achievementParserDispatcher);
                     response = _parseJsonFromHtml.ParseHtml(content);
                 }
             }

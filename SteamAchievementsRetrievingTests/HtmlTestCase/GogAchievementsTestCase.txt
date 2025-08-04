@@ -8,9 +8,5 @@
 window.profilesData.achievements = [{"achievement":{"id":"57552207661233116","clientId":"51950944650800176","name":"Doge Coins","description":"Starting as Venice, become the best.","imageUrlLocked":"https:\/\/images.gog.com\/test.jpg","imageUrlUnlocked":"https:\/\/images.gog.com\/test.jpg","product":[],"user":[],"rarityLevelSlug":"Legend","rarity":0,"visible":true},"stats":{"11":{"isUnlocked":true,"unlockDate":null}}},{"achievement":{"id":"22","clientId":"51950944650800176","name":"New achievement","description":"Starting as any Mayan country, conquer the world","imageUrlLocked":"https:\/\/images.gog.com\/test.jpg","imageUrlUnlocked":"https:\/\/images.gog.com\/test.jpg","product":[],"user":[],"rarityLevelSlug":"Legend","rarity":0,"visible":true},"stats":{"222":{"isUnlocked":false,"unlockDate":null}}}];
 
 
-
 </body>
 </html>
-
-
-
