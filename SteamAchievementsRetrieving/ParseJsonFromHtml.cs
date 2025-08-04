@@ -16,7 +16,6 @@ public class ParseJsonFromHtml(IAchievementParserDispatcher achievementParserDis
         var match = Regex.Match(jsonFromHtml, @"window\.profilesData\.achievements\s*=\s*(\[.*?\]);", RegexOptions.Singleline);
         if (!match.Success) throw new Exception("Not found achievements.");
         var json = match.Groups[1].Value;
-        //var wrappedJson = $"{{\"Achievements\": {json}}}";
         
         AchievementsResponse result = new AchievementsResponse
         {

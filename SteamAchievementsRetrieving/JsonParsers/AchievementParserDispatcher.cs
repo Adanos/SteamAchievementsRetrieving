@@ -7,28 +7,28 @@ namespace SteamAchievementsRetrieving.JsonParsers;
 
 public class AchievementParserDispatcher : IAchievementParserDispatcher
 {
-    private readonly IList<IAchievementParser> _parsers;
+    private readonly IAchievementParser _activeParser;
 
-    public AchievementParserDispatcher()
+    public AchievementParserDispatcher(AchievementSourceConfiguration achievementSourceConfiguration)
     {
-        _parsers = new List<IAchievementParser>
+        IDictionary<AchievementSource, IAchievementParser> parsers = new Dictionary<AchievementSource, IAchievementParser>
         {
-            new SteamAchievementParser(),
-            new GogAchievementParser()
+            { AchievementSource.Steam, new SteamAchievementParser() },
+            { AchievementSource.GoG, new GogAchievementParser() }
         };
+        
+        var source = achievementSourceConfiguration.Name;
+
+        if (!parsers.TryGetValue(source, out _activeParser))
+        {
+            var available = string.Join(", ", parsers.Keys);
+            throw new InvalidOperationException($"Invalid parser '{source}'. Available: {available}");
+        }
     }
 
     public IList<GameAchievement> Parse(string json)
     {
         using var doc = JsonDocument.Parse(json);
-        var root = doc.RootElement;
-
-        foreach (var parser in _parsers)
-        {
-            if (parser.CanParse(root))
-                return parser.Parse(root);
-        }
-
-        throw new NotSupportedException("Unsupported JSON format.");
+        return _activeParser.Parse(doc.RootElement);
     }
 }

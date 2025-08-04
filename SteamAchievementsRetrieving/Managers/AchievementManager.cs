@@ -22,15 +22,17 @@ namespace SteamAchievementsRetrieving.Managers
         private readonly SteamAchievementConfiguration _steamAchievementConfiguration;
         private readonly GogAchievementConfiguration _gogAchievementConfiguration;
         private readonly EuropaUniversalisFilesStructureConfiguration _europaUniversalisFilesStructureConfiguration;
+        private readonly IAchievementParserDispatcher _achievementParserDispatcher;
         private readonly FilenameCreator _filenameCreator;
         private IList<AchievementResponse> AchievementsResponse { get; set; }
         private ISet<string> _dlcNames;
-
+        
         public IList<Achievement> Achievements { get; private set; }
 
-        public AchievementManager(HttpClient httpClient, IConfiguration configuration)
+        public AchievementManager(HttpClient httpClient, IAchievementParserDispatcher achievementParserDispatcher, IConfiguration configuration)
         {
             _httpClient = httpClient;
+            _achievementParserDispatcher = achievementParserDispatcher;
             _steamAchievementConfiguration = configuration.GetSection(nameof(SteamAchievementConfiguration)).Get<SteamAchievementConfiguration>();
             _gogAchievementConfiguration = configuration.GetSection(nameof(GogAchievementConfiguration)).Get<GogAchievementConfiguration>();
             _europaUniversalisFilesStructureConfiguration = configuration.GetSection(nameof(EuropaUniversalisFilesStructureConfiguration)).Get<EuropaUniversalisFilesStructureConfiguration>();
@@ -50,8 +52,7 @@ namespace SteamAchievementsRetrieving.Managers
             {
                 try
                 {
-                    AchievementParserDispatcher achievementParserDispatcher = new AchievementParserDispatcher();
-                    IParseJsonFromHtml parseJsonFromHtml = new ParseJsonFromHtml(achievementParserDispatcher);
+                    IParseJsonFromHtml parseJsonFromHtml = new ParseJsonFromHtml(_achievementParserDispatcher);
                     //IAchievementsRetrieving steamAchievementsRetrieving = new SteamAchievementsRetrieving(_httpClient, _steamAchievementConfiguration);
                     IAchievementsRetrieving gogAchievementsRetrieving = new GogAchievementsRetrieving(_httpClient, parseJsonFromHtml, _gogAchievementConfiguration);
                     //var results = await steamAchievementsRetrieving.GetAllAchievementsAsync();

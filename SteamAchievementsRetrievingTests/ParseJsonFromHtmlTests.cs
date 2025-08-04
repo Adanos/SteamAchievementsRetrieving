@@ -3,6 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using SteamAchievementsRetrieving;
 using SteamAchievementsRetrieving.JsonParsers;
+using SteamAchievementsRetrieving.Models;
 
 namespace SteamAchievementsRetrievingTests;
 
@@ -15,7 +16,11 @@ public class ParseJsonFromHtmlTests
         var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
         using var reader = new StreamReader(fileStream);
         string jsonFromHtml = reader.ReadToEnd();
-        AchievementParserDispatcher achievementParserDispatcher = new AchievementParserDispatcher();
+        AchievementSourceConfiguration achievementSourceConfiguration = new()
+        {
+            Name = AchievementSource.GoG
+        };
+        AchievementParserDispatcher achievementParserDispatcher = new AchievementParserDispatcher(achievementSourceConfiguration);
         ParseJsonFromHtml simpleParser = new(achievementParserDispatcher);
 
         var result = simpleParser.ParseHtml(jsonFromHtml);

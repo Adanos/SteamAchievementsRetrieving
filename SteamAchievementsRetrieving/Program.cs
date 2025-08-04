@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using SteamAchievementsRetrieving.Managers;
 using System.Net.Http;
 using System.Threading.Tasks;
+using SteamAchievementsRetrieving.JsonParsers;
 
 namespace SteamAchievementsRetrieving
 {
@@ -11,13 +14,17 @@ namespace SteamAchievementsRetrieving
 
         static async Task Main(string[] args)
         {
-            Configuration = new ConfigurationBuilder()
-               .AddJsonFile("appsettings.json", true, true)
-               .Build();
-            using HttpClient client = new();
-            AchievementManager achievementManager = new AchievementManager(client, Configuration);
-            await achievementManager.CreateAchievements();
+            using var host = CreateHostBuilder(args).Build();
 
+            // Create scope to resolve scoped/transient services
+            using var scope = host.Services.CreateScope();
+            var services = scope.ServiceProvider;
+
+            // Use the AchievementManager from DI
+            var achievementManager = services.GetRequiredService<AchievementManager>();
+            
+            await achievementManager.CreateAchievements();
+            
             if (achievementManager.Achievements != null)
             {
                 AchievementMatrixCreator achievementMatrixCreator = new AchievementMatrixCreator(achievementManager.Achievements);
@@ -26,5 +33,21 @@ namespace SteamAchievementsRetrieving
                 achievementManager.SaveAchievementsToFile("updated", updatedAchievements);
             }     
         }
+        
+        static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((_, config) =>
+                {
+                    config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                })
+                .ConfigureServices((_, services) =>
+                {
+                    services.AddSingleton<HttpClient>();
+                    
+                    services.AddSingleton<AchievementManager>();
+                    services.AddSingleton<SteamAchievementParser>();
+                    services.AddSingleton<GogAchievementParser>();
+                    services.AddSingleton<AchievementParserDispatcher>();
+                });
     }
 }
