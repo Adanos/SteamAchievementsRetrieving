@@ -33,21 +33,6 @@ namespace SteamAchievementsRetrievingTests
                 User = "testUser",
                 GameId = "12345"
             };
-            var expectedAchievements = new List<GameAchievement>
-            {
-                new GameAchievement
-                {
-                    Name = "Doge Coins",
-                    Description = "Starting as Venice, become the best.",
-                    IsUnlocked = true,
-                },
-                new GameAchievement
-                {
-                    Name = "New achievement",
-                    Description = "Starting as any Mayan country, conquer the world",
-                    IsUnlocked = false,
-                }
-            };
             
             _parseJsonFromHtmlMock
                 .Setup(p => p.ParseHtml(It.IsAny<string>()))

@@ -26,14 +26,14 @@ public class SteamAchievementParser : IAchievementParser
         if (playerStats.TryGetProperty(Achievements, out var achievements) &&
             achievements.ValueKind == JsonValueKind.Array)
         {
-            foreach (var a in achievements.EnumerateArray())
+            foreach (var achievement in achievements.EnumerateArray())
             {
                 results.Add(new GameAchievement
                 {
                     GameName = gameName,
-                    Name = a.GetProperty(Name).GetString(),
-                    Description = a.GetProperty(Description).GetString(),
-                    IsUnlocked = a.GetProperty(Achieved).GetInt32() == 1
+                    Name = achievement.GetProperty(Name).GetString(),
+                    Description = achievement.GetProperty(Description).GetString(),
+                    IsUnlocked = achievement.GetProperty(Achieved).GetInt32() == 1
                 });
             }
         }

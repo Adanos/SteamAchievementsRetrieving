@@ -5,6 +5,9 @@ using SteamAchievementsRetrieving.Managers;
 using System.Net.Http;
 using System.Threading.Tasks;
 using SteamAchievementsRetrieving.JsonParsers;
+using SteamAchievementsRetrieving.Models;
+using SteamAchievementsRetrieving.Models.FromApi.Gog;
+using SteamAchievementsRetrieving.Models.FromApi.Steam;
 
 namespace SteamAchievementsRetrieving
 {
@@ -15,12 +18,9 @@ namespace SteamAchievementsRetrieving
         static async Task Main(string[] args)
         {
             using var host = CreateHostBuilder(args).Build();
-
-            // Create scope to resolve scoped/transient services
             using var scope = host.Services.CreateScope();
             var services = scope.ServiceProvider;
-
-            // Use the AchievementManager from DI
+            
             var achievementManager = services.GetRequiredService<AchievementManager>();
             
             await achievementManager.CreateAchievements();
@@ -43,11 +43,13 @@ namespace SteamAchievementsRetrieving
                 .ConfigureServices((_, services) =>
                 {
                     services.AddSingleton<HttpClient>();
-                    
                     services.AddSingleton<AchievementManager>();
                     services.AddSingleton<SteamAchievementParser>();
                     services.AddSingleton<GogAchievementParser>();
-                    services.AddSingleton<AchievementParserDispatcher>();
+                    services.AddSingleton<AchievementSourceConfiguration>();  
+                    services.AddSingleton<SteamAchievementConfiguration>(); 
+                    services.AddSingleton<GogAchievementConfiguration>();   
+                    services.AddSingleton<IAchievementParserDispatcher, AchievementParserDispatcher>();
                 });
     }
 }

@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Web;
+using SteamAchievementsRetrieving.JsonParsers;
 using SteamAchievementsRetrieving.Models.FromApi;
 
 namespace SteamAchievementsRetrieving
@@ -13,15 +14,18 @@ namespace SteamAchievementsRetrieving
     {
         private readonly HttpClient _httpClient;
         private readonly SteamAchievementConfiguration _steamAchievementConfiguration;
-        public SteamAchievementsRetrieving(HttpClient httpClient, SteamAchievementConfiguration steamAchievementConfiguration)
+        private readonly IAchievementParserDispatcher _achievementParserDispatcher;
+
+        public SteamAchievementsRetrieving(HttpClient httpClient, IAchievementParserDispatcher achievementParserDispatcher, SteamAchievementConfiguration steamAchievementConfiguration)
         {
             _httpClient = httpClient;
+            _achievementParserDispatcher = achievementParserDispatcher;
             _steamAchievementConfiguration = steamAchievementConfiguration;
         }
 
         public async Task<AchievementsResponse> GetAllAchievementsAsync()
         {
-            var response = new SteamAchievementResponse();
+            var response = new AchievementsResponse();
 
             if (string.IsNullOrWhiteSpace(_steamAchievementConfiguration.AddressApi) || string.IsNullOrWhiteSpace(_steamAchievementConfiguration.ApplicationId) ||
                 string.IsNullOrWhiteSpace(_steamAchievementConfiguration.AuthentificationKey) || string.IsNullOrWhiteSpace(_steamAchievementConfiguration.SteamId) ||
@@ -49,7 +53,8 @@ namespace SteamAchievementsRetrieving
                 if (achievementsResponse.IsSuccessStatusCode)
                 {
                     var content = await achievementsResponse.Content.ReadAsStringAsync();
-                    response = JsonConvert.DeserializeObject<SteamAchievementResponse>(content);
+                    response.Achievements = _achievementParserDispatcher.Parse(content);
+                    //response = JsonConvert.DeserializeObject<SteamAchievementResponse>(content);
                     response.Success = true;
                 }
             }
