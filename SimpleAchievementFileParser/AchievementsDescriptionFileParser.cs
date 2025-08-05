@@ -4,13 +4,11 @@ namespace SimpleAchievementFileParser
 {
     public class AchievementsDescriptionFileParser(string fileName)
     {
-        private readonly string _fileName = fileName;
-
         public IDictionary<string, AchievementDescription> ParseFile()
         {
             string? line;
             IDictionary<string, AchievementDescription> achievementsDescriptions = new Dictionary<string, AchievementDescription>();
-            var fileStream = new FileStream(_fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            var fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using var reader = new StreamReader(fileStream);
             AchievementDescription? currentAchievementDescription = null;
             string[] delimiters = ["_NAME:0 ", "_DESC:0 ", "_NAME:1 ", "_DESC:1 ", "_DESC:2 "];
