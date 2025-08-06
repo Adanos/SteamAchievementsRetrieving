@@ -34,7 +34,7 @@ public class AchievementParserDispatcherTests
         var dispatcher = new AchievementParserDispatcher(configuration);
         var invalidJson = "{Invalid JSON}";
 
-        var ex = Assert.Catch(() => dispatcher.Parse(invalidJson));
+        var ex = Assert.Catch(() => dispatcher.GetParser().Parse(invalidJson));
         Assert.That(ex, Is.InstanceOf<JsonException>());
     }
 }

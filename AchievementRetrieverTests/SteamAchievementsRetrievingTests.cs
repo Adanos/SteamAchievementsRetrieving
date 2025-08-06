@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using Moq.Protected;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using AchievementRetriever.JsonParsers;
+using AchievementRetriever.Models;
 using AchievementRetriever.Models.FromApi.Steam;
 
 namespace AchievementRetrieverTests
@@ -16,14 +18,14 @@ namespace AchievementRetrieverTests
     public class SteamAchievementsRetrievingTests
     {
         private Mock<IHttpClientFactory> _httpClientFactoryMock;
-        private Mock<IAchievementParserDispatcher> _achievementParserDispatcher;
+        private Mock<IAchievementParserDispatcher> _achievementParserDispatcherMock;
         private SteamAchievementConfiguration _configurationMock;
 
         [SetUp]
         public void SetUp()
         {
             _httpClientFactoryMock = new Mock<IHttpClientFactory>();
-            _achievementParserDispatcher = new Mock<IAchievementParserDispatcher>();
+            _achievementParserDispatcherMock = new Mock<IAchievementParserDispatcher>();
             _configurationMock = new SteamAchievementConfiguration
             {
                 AddressApi = "https://api.steampowered.com",
@@ -32,6 +34,9 @@ namespace AchievementRetrieverTests
                 SteamId = "1234567890",
                 Language = "en"
             };
+            _achievementParserDispatcherMock
+                .Setup(x => x.GetParser())
+                .Returns(new SteamAchievementParser());
         }
 
         [Test]
@@ -41,7 +46,8 @@ namespace AchievementRetrieverTests
             var expectedResponse = new SteamAchievementResponse
             {
                 Success = true,
-                StatusCode = HttpStatusCode.OK
+                StatusCode = HttpStatusCode.OK,
+                PlayerStats = new PlayerStats() { GameName = "gameName", SteamId = "1", Achievements = new List<AchievementResponse>()}
             };
 
             var handlerMock = new Mock<HttpMessageHandler>(MockBehavior.Strict);
@@ -55,13 +61,13 @@ namespace AchievementRetrieverTests
                 .ReturnsAsync(new HttpResponseMessage
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(JsonConvert.SerializeObject(expectedResponse))
+                    Content = new StringContent(JsonSerializer.Serialize(expectedResponse))
                 });
 
             var client = new HttpClient(handlerMock.Object);
             _httpClientFactoryMock.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
-            var service = new AchievementRetriever.SteamAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcher.Object, _configurationMock);
+            var service = new AchievementRetriever.SteamAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _configurationMock);
 
             // Act
             var result = await service.GetAllAchievementsAsync();
@@ -93,7 +99,7 @@ namespace AchievementRetrieverTests
             var client = new HttpClient(handlerMock.Object);
             _httpClientFactoryMock.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
-            var service = new AchievementRetriever.SteamAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcher.Object, _configurationMock);
+            var service = new AchievementRetriever.SteamAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _configurationMock);
 
             // Act
             var result = await service.GetAllAchievementsAsync();
@@ -109,7 +115,7 @@ namespace AchievementRetrieverTests
         {
             // Arrange
             _configurationMock.AddressApi = null; // Simulate invalid configuration
-            var service = new AchievementRetriever.SteamAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcher.Object, _configurationMock);
+            var service = new AchievementRetriever.SteamAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _configurationMock);
 
             // Act & Assert
             Assert.That(

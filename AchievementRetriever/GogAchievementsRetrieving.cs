@@ -2,6 +2,7 @@
 using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Threading.Tasks;
+using AchievementRetriever.JsonParsers;
 using AchievementRetriever.Models.FromApi;
 using AchievementRetriever.Models.FromApi.Gog;
 
@@ -10,14 +11,13 @@ namespace AchievementRetriever
     public class GogAchievementsRetrieving : IAchievementsRetrieving
     {
         private readonly HttpClient _httpClient;
+        private readonly IAchievementParserDispatcher _achievementParserDispatcher;
         private readonly GogAchievementConfiguration _gogAchievementConfiguration;
-        private readonly IParseJsonFromHtml _parseJsonFromHtml;
 
-        public GogAchievementsRetrieving(HttpClient httpClient, IParseJsonFromHtml parseJsonFromHtml, 
-            GogAchievementConfiguration gogAchievementConfiguration)
+        public GogAchievementsRetrieving(HttpClient httpClient, IAchievementParserDispatcher achievementParserDispatcher, GogAchievementConfiguration gogAchievementConfiguration)
         {
             _httpClient = httpClient;
-            _parseJsonFromHtml = parseJsonFromHtml;
+            _achievementParserDispatcher = achievementParserDispatcher;
             _gogAchievementConfiguration = gogAchievementConfiguration;
         }
 
@@ -46,7 +46,8 @@ namespace AchievementRetriever
                 if (achievementsResponse.IsSuccessStatusCode)
                 {
                     var content = await achievementsResponse.Content.ReadAsStringAsync();
-                    response = _parseJsonFromHtml.ParseHtml(content);
+                    response.Achievements = _achievementParserDispatcher.GetParser().Parse(content);
+                    response.Success = true;
                 }
             }
             catch (UriFormatException ex)

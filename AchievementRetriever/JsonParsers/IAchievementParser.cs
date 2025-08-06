@@ -7,5 +7,5 @@ namespace AchievementRetriever.JsonParsers;
 public interface IAchievementParser
 {
     bool CanParse(JsonElement root);
-    List<GameAchievement> Parse(JsonElement root);
+    IList<GameAchievement> Parse(string json);
 }

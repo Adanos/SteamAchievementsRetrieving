@@ -53,8 +53,7 @@ namespace AchievementRetriever
                 if (achievementsResponse.IsSuccessStatusCode)
                 {
                     var content = await achievementsResponse.Content.ReadAsStringAsync();
-                    response.Achievements = _achievementParserDispatcher.Parse(content);
-                    //response = JsonConvert.DeserializeObject<SteamAchievementResponse>(content);
+                    response.Achievements = _achievementParserDispatcher.GetParser().Parse(content);
                     response.Success = true;
                 }
             }

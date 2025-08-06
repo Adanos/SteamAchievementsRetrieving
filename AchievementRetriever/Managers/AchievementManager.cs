@@ -53,7 +53,6 @@ namespace AchievementRetriever.Managers
             {
                 try
                 {
-                    IParseJsonFromHtml parseJsonFromHtml = new ParseJsonFromHtml(_achievementParserDispatcher);
                     IAchievementsRetrieving steamAchievementsRetrieving = new SteamAchievementsRetrieving(_httpClient, _achievementParserDispatcher, _steamAchievementConfiguration);
                     //IAchievementsRetrieving gogAchievementsRetrieving = new GogAchievementsRetrieving(_httpClient, parseJsonFromHtml, _gogAchievementConfiguration);
                     var results = await steamAchievementsRetrieving.GetAllAchievementsAsync();

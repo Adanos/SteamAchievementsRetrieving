@@ -16,7 +16,13 @@ public class SteamAchievementParser : IAchievementParser
     public bool CanParse(JsonElement root) =>
         root.ValueKind == JsonValueKind.Object && root.TryGetProperty(PlayerStats, out _);
 
-    public List<GameAchievement> Parse(JsonElement root)
+    public IList<GameAchievement> Parse(string json)
+    {
+        using var doc = JsonDocument.Parse(json);
+        return Parse(doc.RootElement);
+    }
+    
+    private List<GameAchievement> Parse(JsonElement root)
     {
         var results = new List<GameAchievement>();
         var playerStats = root.GetProperty(PlayerStats);

@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using Moq.Protected;
-using Newtonsoft.Json;
 using NUnit.Framework;
 using AchievementRetriever;
+using AchievementRetriever.JsonParsers;
 using AchievementRetriever.Models;
 using AchievementRetriever.Models.FromApi;
 using AchievementRetriever.Models.FromApi.Gog;
@@ -20,13 +23,13 @@ namespace AchievementRetrieverTests
     {
         private Mock<IHttpClientFactory> _httpClientFactoryMock;
         private GogAchievementConfiguration _configurationMock;
-        private Mock<IParseJsonFromHtml> _parseJsonFromHtmlMock;
+        private Mock<IAchievementParserDispatcher> _achievementParserDispatcherMock;
 
         [SetUp]
         public void SetUp()
         {
             _httpClientFactoryMock = new Mock<IHttpClientFactory>();
-            _parseJsonFromHtmlMock = new Mock<IParseJsonFromHtml>();
+            _achievementParserDispatcherMock = new Mock<IAchievementParserDispatcher>();
             _configurationMock = new GogAchievementConfiguration
             {
                 AddressApi = "https://www.gog.com/u/{0}/game/{1}",
@@ -34,17 +37,9 @@ namespace AchievementRetrieverTests
                 GameId = "12345"
             };
             
-            _parseJsonFromHtmlMock
-                .Setup(p => p.ParseHtml(It.IsAny<string>()))
-                .Returns(new AchievementsResponse
-                {
-                    Achievements = new List<GameAchievement>
-                    {
-                        new GameAchievement { Name = "Test", Description = "Desc" }
-                    },
-                    Success = true,
-                    StatusCode = System.Net.HttpStatusCode.OK
-                });
+            _achievementParserDispatcherMock
+                .Setup(x => x.GetParser())
+                .Returns(new GogAchievementParser());
         }
 
         [Test]
@@ -70,13 +65,13 @@ namespace AchievementRetrieverTests
                 {
                     StatusCode = HttpStatusCode.OK,
                     Content = new StringContent(
-                        $@"window.profilesData.achievements={JsonConvert.SerializeObject(expectedResponse.Achievements)}")
+                        "window.profilesData.achievements=[{\"achievement\":{\"name\":\"name\",\"description\":\"desc\",\"isUnlocked\":false}}];")
                 });
 
             var client = new HttpClient(handlerMock.Object);
             _httpClientFactoryMock.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
-            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _parseJsonFromHtmlMock.Object, _configurationMock);
+            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _configurationMock);
 
             // Act
             var result = await service.GetAllAchievementsAsync();
@@ -108,7 +103,7 @@ namespace AchievementRetrieverTests
             var client = new HttpClient(handlerMock.Object);
             _httpClientFactoryMock.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
-            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _parseJsonFromHtmlMock.Object, _configurationMock);
+            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _configurationMock);
 
             // Act
             var result = await service.GetAllAchievementsAsync();
@@ -124,7 +119,7 @@ namespace AchievementRetrieverTests
         {
             // Arrange
             _configurationMock.AddressApi = "invalid-url";
-            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _parseJsonFromHtmlMock.Object, _configurationMock);
+            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _configurationMock);
 
             // Act & Assert
             Assert.That(
@@ -150,13 +145,36 @@ namespace AchievementRetrieverTests
             var client = new HttpClient(handlerMock.Object);
             _httpClientFactoryMock.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
 
-            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _parseJsonFromHtmlMock.Object, _configurationMock);
+            var service = new GogAchievementsRetrieving(_httpClientFactoryMock.Object.CreateClient(), _achievementParserDispatcherMock.Object, _configurationMock);
 
             // Act & Assert
             Assert.That(
                 service.GetAllAchievementsAsync,
                 Throws.TypeOf<TaskCanceledException>()
             );
+        }
+        
+        [Test]
+        public void ParseJsonFromHtmlTests_ParseFileWithTwoDescription_ReturnObject()
+        {
+            var path = Path.Combine("HtmlTestCase", "GogAchievementsTestCase.txt");
+            var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            using var reader = new StreamReader(fileStream);
+            string jsonFromHtml = reader.ReadToEnd();
+            AchievementSourceConfiguration achievementSourceConfiguration = new()
+            {
+                Name = AchievementSource.GoG
+            };
+            AchievementParserDispatcher achievementParserDispatcher = new AchievementParserDispatcher(achievementSourceConfiguration);
+
+            var result = achievementParserDispatcher.GetParser().Parse(jsonFromHtml).ToList();
+            Assert.That(result.Count, Is.EqualTo(2));
+            Assert.That(result.First().Name, Is.EqualTo("Doge Coins"));
+            Assert.That(result.First().Description, Is.EqualTo("Starting as Venice, become the best."));
+            Assert.That(result.First().IsUnlocked, Is.True);
+            Assert.That(result.Last().Name, Is.EqualTo("New achievement"));
+            Assert.That(result.Last().Description, Is.EqualTo("Starting as any Mayan country, conquer the world"));
+            Assert.That(result.Last().IsUnlocked, Is.False);
         }
     }
 }

@@ -26,9 +26,8 @@ public class AchievementParserDispatcher : IAchievementParserDispatcher
         }
     }
 
-    public IList<GameAchievement> Parse(string json)
+    public IAchievementParser GetParser()
     {
-        using var doc = JsonDocument.Parse(json);
-        return _activeParser.Parse(doc.RootElement);
+        return _activeParser;
     }
 }

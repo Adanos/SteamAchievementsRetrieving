@@ -22,7 +22,6 @@ public class AchievementsRetrievingFactoryTests
         var services = new ServiceCollection();
         services.AddTransient<HttpClient>();
         services.AddTransient<IAchievementParserDispatcher, AchievementParserDispatcher>();
-        services.AddTransient<IParseJsonFromHtml, ParseJsonFromHtml>();
         services.AddTransient<AchievementSourceConfiguration>();
         services.AddTransient<GogAchievementConfiguration>();
         services.AddTransient<SteamAchievementConfiguration>();

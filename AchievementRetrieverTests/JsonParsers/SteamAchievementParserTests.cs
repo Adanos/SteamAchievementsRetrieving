@@ -35,10 +35,9 @@ public class SteamAchievementParserTests
     public void Parse_WhenValidPlayerStatsProvided_ReturnsAchievements()
     {
         var json = "{\"playerstats\": {\"gameName\": \"Game 1\", \"achievements\": [{\"name\": \"Achievement 1\", \"description\": \"Description 1\", \"achieved\": 1}]}}";
-        var root = JsonDocument.Parse(json).RootElement;
 
         var parser = new SteamAchievementParser();
-        var result = parser.Parse(root);
+        var result = parser.Parse(json);
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Has.Count.EqualTo(1));
@@ -52,10 +51,9 @@ public class SteamAchievementParserTests
     public void Parse_WhenAchievementsArrayIsMissing_ReturnsEmptyList()
     {
         var json = "{\"playerstats\": {\"gameName\": \"Game 1\"}}";
-        var root = JsonDocument.Parse(json).RootElement;
 
         var parser = new SteamAchievementParser();
-        var result = parser.Parse(root);
+        var result = parser.Parse(json);
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result, Is.Empty);
@@ -65,21 +63,19 @@ public class SteamAchievementParserTests
     public void Parse_WhenGameNameIsMissing_ThrowsKeyNotFoundException()
     {
         var json = "{\"playerstats\": {\"achievements\": [{\"name\": \"Achievement 1\", \"description\": \"Description 1\", \"achieved\": 1}]}}";
-        var root = JsonDocument.Parse(json).RootElement;
 
         var parser = new SteamAchievementParser();
 
-        Assert.Throws<KeyNotFoundException>(() => parser.Parse(root));
+        Assert.Throws<KeyNotFoundException>(() => parser.Parse(json));
     }
 
     [Test]
     public void Parse_WhenAchievementPropertiesAreMissing_ThrowsKeyNotFoundException()
     {
         var json = "{\"playerstats\": {\"gameName\": \"Game 1\", \"achievements\": [{\"invalidProperty\": \"Invalid Value\"}]}}";
-        var root = JsonDocument.Parse(json).RootElement;
 
         var parser = new SteamAchievementParser();
 
-        Assert.Throws<KeyNotFoundException>(() => parser.Parse(root));
+        Assert.Throws<KeyNotFoundException>(() => parser.Parse(json));
     }
 }
