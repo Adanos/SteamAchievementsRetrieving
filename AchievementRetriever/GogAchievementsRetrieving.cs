@@ -11,13 +11,13 @@ namespace AchievementRetriever
     public class GogAchievementsRetrieving : IAchievementsRetrieving
     {
         private readonly HttpClient _httpClient;
-        private readonly IAchievementParserDispatcher _achievementParserDispatcher;
+        private readonly IAchievementParser _achievementParser;
         private readonly GogAchievementConfiguration _gogAchievementConfiguration;
 
         public GogAchievementsRetrieving(HttpClient httpClient, IAchievementParserDispatcher achievementParserDispatcher, GogAchievementConfiguration gogAchievementConfiguration)
         {
             _httpClient = httpClient;
-            _achievementParserDispatcher = achievementParserDispatcher;
+            _achievementParser = achievementParserDispatcher.GetParser();
             _gogAchievementConfiguration = gogAchievementConfiguration;
         }
 
@@ -46,7 +46,7 @@ namespace AchievementRetriever
                 if (achievementsResponse.IsSuccessStatusCode)
                 {
                     var content = await achievementsResponse.Content.ReadAsStringAsync();
-                    response.Achievements = _achievementParserDispatcher.GetParser().Parse(content);
+                    response.Achievements = _achievementParser.Parse(content);
                     response.Success = true;
                 }
             }
@@ -70,6 +70,11 @@ namespace AchievementRetriever
             }
 
             return response;
+        }
+
+        public string GetFilePathToSaveResult()
+        {
+            return _gogAchievementConfiguration.FilePathToSaveResult;
         }
     }
 }

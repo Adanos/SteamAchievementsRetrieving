@@ -6,4 +6,5 @@ namespace AchievementRetriever;
 public interface IAchievementsRetrieving
 {
     Task<AchievementsResponse> GetAllAchievementsAsync();
+    string GetFilePathToSaveResult();
 }

@@ -7,9 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using AchievementRetriever.IO;
-using AchievementRetriever.JsonParsers;
 using AchievementRetriever.Models;
-using AchievementRetriever.Models.FromApi.Gog;
 using AchievementRetriever.Models.FromApi.Steam;
 using AchievementRetriever.Models.FromGameStructure;
 using AchievementRetriever.Filters;
@@ -18,32 +16,28 @@ namespace AchievementRetriever.Managers
 {
     internal class AchievementManager
     {
-        private readonly HttpClient _httpClient;
         private readonly SteamAchievementConfiguration _steamAchievementConfiguration;
-        private readonly GogAchievementConfiguration _gogAchievementConfiguration;
         private readonly EuropaUniversalisFilesStructureConfiguration _europaUniversalisFilesStructureConfiguration;
-        private readonly IAchievementParserDispatcher _achievementParserDispatcher;
+        private readonly IAchievementsRetrieving _achievementsRetrieving;
         private readonly FilenameCreator _filenameCreator;
         private IList<AchievementResponse> AchievementsResponse { get; set; }
         private ISet<string> _dlcNames;
         
         public IList<Achievement> Achievements { get; private set; }
 
-        public AchievementManager(HttpClient httpClient, IAchievementParserDispatcher achievementParserDispatcher, IConfiguration configuration)
+        public AchievementManager(IAchievementsRetrieving achievementsRetrieving, IConfiguration configuration)
         {
-            _httpClient = httpClient;
-            _achievementParserDispatcher = achievementParserDispatcher;
-            _steamAchievementConfiguration = configuration.GetSection(nameof(SteamAchievementConfiguration)).Get<SteamAchievementConfiguration>();
-            _gogAchievementConfiguration = configuration.GetSection(nameof(GogAchievementConfiguration)).Get<GogAchievementConfiguration>();
+            _achievementsRetrieving = achievementsRetrieving;
             _europaUniversalisFilesStructureConfiguration = configuration.GetSection(nameof(EuropaUniversalisFilesStructureConfiguration)).Get<EuropaUniversalisFilesStructureConfiguration>();
+            
+            _steamAchievementConfiguration = configuration.GetSection(nameof(SteamAchievementConfiguration)).Get<SteamAchievementConfiguration>();
             _filenameCreator = new FilenameCreator(_steamAchievementConfiguration);  
         }
 
         public async Task CreateAchievements()
         {
             string pattern = _filenameCreator.CreateFilename(@"*");
-            string[] files = Directory.GetFiles(_steamAchievementConfiguration.FilePathToSaveResult, pattern, SearchOption.TopDirectoryOnly);
-            //string[] files = Directory.GetFiles(_gogAchievementConfiguration.FilePathToSaveResult, pattern, SearchOption.TopDirectoryOnly);
+            string[] files = Directory.GetFiles(_achievementsRetrieving.GetFilePathToSaveResult(), pattern, SearchOption.TopDirectoryOnly);
 
             if (files.Length > 0)
             {
@@ -53,10 +47,7 @@ namespace AchievementRetriever.Managers
             {
                 try
                 {
-                    IAchievementsRetrieving steamAchievementsRetrieving = new SteamAchievementsRetrieving(_httpClient, _achievementParserDispatcher, _steamAchievementConfiguration);
-                    //IAchievementsRetrieving gogAchievementsRetrieving = new GogAchievementsRetrieving(_httpClient, parseJsonFromHtml, _gogAchievementConfiguration);
-                    var results = await steamAchievementsRetrieving.GetAllAchievementsAsync();
-                    //var results = await gogAchievementsRetrieving.GetAllAchievementsAsync();
+                    var results = await _achievementsRetrieving.GetAllAchievementsAsync();
 
                     if (results.Success)
                     {
@@ -76,6 +67,12 @@ namespace AchievementRetriever.Managers
                     Console.WriteLine("Error, message: {0}, inner exception {1}", ex.Message, ex.InnerException);
                 }
             }
+        }
+        
+        public void SaveAchievementsToFile(string gameName, IList<Achievement> achievements)
+        {
+            SaveFileManager saveFileManager = new SaveFileManager(_filenameCreator.CreateFullPath(gameName), _dlcNames, achievements);
+            saveFileManager.SaveCsvFile();
         }
 
         private void MapAchievements()
@@ -127,12 +124,6 @@ namespace AchievementRetriever.Managers
         private void SaveAchievementsToFile(string gameName)
         {
             SaveFileManager saveFileManager = new SaveFileManager(_filenameCreator.CreateFullPath(gameName), _dlcNames, Achievements);
-            saveFileManager.SaveCsvFile();
-        }
-
-        public void SaveAchievementsToFile(string gameName, IList<Achievement> achievements)
-        {
-            SaveFileManager saveFileManager = new SaveFileManager(_filenameCreator.CreateFullPath(gameName), _dlcNames, achievements);
             saveFileManager.SaveCsvFile();
         }
     }

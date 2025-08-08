@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -13,14 +12,14 @@ namespace AchievementRetriever
     public class SteamAchievementsRetrieving : IAchievementsRetrieving
     {
         private readonly HttpClient _httpClient;
+        private readonly IAchievementParser _achievementParser;
         private readonly SteamAchievementConfiguration _steamAchievementConfiguration;
-        private readonly IAchievementParserDispatcher _achievementParserDispatcher;
 
         public SteamAchievementsRetrieving(HttpClient httpClient, IAchievementParserDispatcher achievementParserDispatcher, SteamAchievementConfiguration steamAchievementConfiguration)
         {
             _httpClient = httpClient;
-            _achievementParserDispatcher = achievementParserDispatcher;
             _steamAchievementConfiguration = steamAchievementConfiguration;
+            _achievementParser = achievementParserDispatcher.GetParser();
         }
 
         public async Task<AchievementsResponse> GetAllAchievementsAsync()
@@ -53,7 +52,7 @@ namespace AchievementRetriever
                 if (achievementsResponse.IsSuccessStatusCode)
                 {
                     var content = await achievementsResponse.Content.ReadAsStringAsync();
-                    response.Achievements = _achievementParserDispatcher.GetParser().Parse(content);
+                    response.Achievements = _achievementParser.Parse(content);
                     response.Success = true;
                 }
             }
@@ -71,6 +70,11 @@ namespace AchievementRetriever
             }
 
             return response;
+        }
+        
+        public string GetFilePathToSaveResult()
+        {
+            return _steamAchievementConfiguration.FilePathToSaveResult;
         }
     }
 }
